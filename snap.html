@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<title itemprop="name">SVG Bouncing Ball Animation</title>
+<span hidden itemprop="author">Marc Fawzi</span>
+<span hidden itemprop="dateCreated">March 21, 2013</span>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- liquid layout -->
+    <link href="css/snap.css" rel="stylesheet" type="text/css" />
+    <!-- Note --
+
+        This app uses "OrganicJS", a self-authored reusable component pattern and feather-weight framework
+
+        Organic supports reusable components with chain*able properties and public methods, dynamic setters/getters,
+        and a contextual component repo (for sharing data/behavior among components in a decoupled, soft manner)
+
+        The main file is organic.js. However, the component pattern is partly implemented in the app file (bouncy.js)
+
+    -->
+</head>
+<body>
+<!-- Idea for another time, another framework --
+     The HTML fragment below is fit for use as a partial for client-side, media-responsive templating framework.
+     For example, we could populate the viewBox based on media attributes and carry out responsive HTML style
+     composition, with template reuse and multiple inheritance to support it. The issue is most templating
+     frameworks don't work well with SVG !:)
+-->
+<input hidden type="range" class="slider1"/>
+    <div id='svgWrapper'>
+        <!-- id's can be nasty in debugging since they exist on window object -->
+        <svg class='svgBox' xmlns="http://www.w3.org/2000/svg"
+             preserveAspectRatio="xMinYMin meet" viewbox='0 0 1280 960'>
+            <!-- board -->
+            <rect class="board1" />
+            <!-- ball -->
+            <circle class="ball1" />
+        </svg>
+    </div>
+</body>
+
+<!-- Self-authored micro-framework -->
+<script src="js/organic.js"></script>
+<!-- jQuery 1.8.3 -->
+<script src="js/jquery.min.js"></script>
+<!-- Bouncing ball app incl. component pattern -->
+<script src="js/bouncy.js"></script>
+
+<script>
+
+    // Notes
+    //
+    // This in-line script does *NOT* go against testability
+    //
+    // It serves as an example of how to access each component's public
+    // properties and methods
+    //
+    // Hooking up *dynamic* unit tests with JSCheck could make a nice
+    // extension to this exercise...
+
+    (function() {
+
+        //see organic.js
+        var cache = app.cache();
+
+        var model = app.model()
+
+        var board1 = app.board(cache, model)
+                // cache context
+                .widget('widget_1')
+                // data model scope
+                .scope('model_1')
+                //settings
+                .elem($('.board1'))
+                .top(100)
+                .left(100)
+                .width(500)
+                .height(500)
+                .fill("lightgray")
+                // save component to cache, using "widget context/component type" (i.e. widget_1/board) as path
+                .provide('board')
+                //draw
+                .draw();
+
+        var ball1 = app.ball(cache, model)
+                // widget context
+                .widget('widget_1')
+                // data model scope
+                .scope('model_1')
+                // consume soft dependencies from cache into specific methods or properties
+                .consume([{type: 'board', into: 'animate'}])
+                // settings
+                .elem($('.ball1'))
+                .radius(10)
+                .dx(2)
+                .dy(4)
+                //
+                // Feature: can use a value-producing closure (a function that returns a function
+                // that returns a value) as an argument instead of a regular value-producing
+                // function so as have the inner function generate the value dynamically
+                // every time the property is read (dynamic properties are very useful)
+                //
+                // Feature: "this" in functions and closures refers to the component instance
+                //
+                .x(function() {
+                   return board1.left() + (board1.width() / 2)
+                })
+                .y(function() {
+                   return  board1.top() + (board1.height() / 2)
+                })
+                .fill("red")
+                // draw
+                .draw();
+
+
+
+        $('.board1').bind("click", function() {
+
+            if (!ball1.animating()) {
+               ball1.animate()
+            } else {
+               // ball1.kick()
+            }
+        })
+
+
+        var slider1 = app.slider(cache, model)
+                // cache context
+                .widget('widget1')
+                // data model scope
+                .scope('model1')
+                //settings
+                .elem($('.slider1'))
+                // need to understand viewBox better w/r/t positioning, couple magic ratios follow
+                .left("7%")
+                .top("1%")
+                .min("10")
+                .max("50")
+                .value("10")
+                // method that takes a function and $.binds it to the slider's 'change' event
+                .onChange(function() { ball1.resize(this.value)})
+                //setup
+                .init();
+
+
+    } ())
+</script>
+</html>
+
