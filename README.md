@@ -26,4 +26,4 @@ resulting in an appropriately light plugin pattern
 
 7. Micro size: less than 50 lines of code
 
-More to come (specifically, events abstracted down to signals and SEO-aware routing/push state functionality)
+More to come (specifically, events abstracted down to signals, SEO-aware routing/push state functionality and support for Web Components W3C standard e.g. Chrome Beta's <template> tag)
