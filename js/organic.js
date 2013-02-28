@@ -39,14 +39,14 @@
         }
 
         // special setter/getter
-        obj.provide = function(type) {
+        obj.provide = function(name) {
 
-            if (type !== undefined) {
-                obj.props.provide = type
+            if (name !== undefined) {
+                obj.props.provide = name
 
                 // Contextual Component Cache
-                // store the component using "widget context/component type" as the path (key)
-                cache.set(obj.widget() + "/" + type, obj);
+                // store the component using "widget context/component name" as the path (key)
+                cache.set(obj.widget() + "/" + name, obj);
 
                 return obj;
             }
@@ -62,12 +62,12 @@
     // For caching and sharing component's data and behavior with components that have the same user-defined context
     //
     // Contextual Component Cache clones the component and saves the clone (with its data and behaviors operating in
-    // the cloned context) under the 'widget context/type' path where context is the component .widget() property and
-    // type is unique within the widget's context, and is specified in the .provide() property of the component being
-    // provided, and available to the consuming component via that component's .consume() property.
+    // the cloned context) under the 'widget context/component name' path where context is the component .widget() 
+    // property while name is specified in the .provide() property of the component being provided, and available 
+    // to the consuming component via that component's .consume() property.
     //
-    // use .provide(type) to cache component
-    // use .consume([{type: 'type', into: 'method or property'}, { ... }, etc]) to consume cached component
+    // use .provide(name) to cache component
+    // use .consume([{name: 'component name', into: 'method or property'}, { ... }, etc]) to consume cached component
     // use console.log(cache.objects()) to view all cached objects and their properties/methods, in all widget contexts
     //
     //
@@ -77,19 +77,19 @@
 
         obj.objects = function() { return obj}
 
-        // cache the component in the given widget/type
-        obj.set = function(widget$type, comp) {
+        // cache the component in the given 'widget context/ component name' path
+        obj.set = function(context$name, comp) {
 
-            obj[widget$type] = {};
+            obj[context$name] = {};
 
             for (key in comp) {
-                obj[widget$type][key] = comp[key]
+                obj[context$name][key] = comp[key]
             }
         }
 
-        // return component if it exists in cache in the given widget/type
-        obj.get = function(widget$type) {
-            return obj[widget$type];
+        // return component if it exists in cache in the given context/name
+        obj.get = function(context$name) {
+            return obj[context$name];
         }
 
         return obj;

@@ -132,31 +132,31 @@
            // from other components that are cached in an isolated context.
            //
            // Contextual Caching provides a soft, decoupled kind of dependency, allowing any component to serve as the
-           // dependency as long as it offers the expected types of data and/or behavior. Component caching also
-           // isolates the dependency from the actual component in both time and space, using 'widget context/component
-           // type' as the path, where context is the cached component's .widget() property defined by the user (for
-           // a set of collaborating components within a widget) and type is the cached component's .provide() which is
-           // available to the consuming component via that component's .consume() map.
+           // dependency as long as it offers the expected data and/or behavior. Component caching isolates the 
+           // dependency from the actual component in both time and space, using 'widget context/component name' as 
+           // the path, where context is the cached component's .widget() property defined by the user (for
+           // a set of collaborating components within a widget) and name is the cached component's .provide() which 
+           // is available to the consuming component via that component's .consume() map.
            //
            // Cached components behave exactly the same as regular components, except they're cloned from the
            // component at the time of caching so they have different state and a different JS native-object
            // context (not to be confused with the component's user-specified context)
            //
-           // In case no imported types are found (in this case the 'board' type in the component's context was
-           // imported) replace with the expected data/behaviors
+           // In case no consumable components are found (in this case the 'board' in the component's widget context 
+           // was consumed in 'animate' method) then replace with the expected data/behaviors
 
            var consumed;
 
-           // find out what type was imported ('animate' being this method's name)
+           // find out what name was imported ('animate' being this method's name)
            for (var n = 0; n < obj.consume().length; n++) {
 
                if (obj.consume()[n].into = "animate") {
-                   consumed = obj.consume()[n].type;
+                   consumed = obj.consume()[n].name;
                    break;
                }
            }
 
-           // try to find a component in cache that has that type
+           // try to find a component in cache that has that name
            var cached = cache.get(obj.widget() + "/" + consumed) ?
                         cache.get(obj.widget() + "/" + consumed) :
            // else replace with the expected data/behaviors

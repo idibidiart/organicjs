@@ -2,7 +2,7 @@
 <html lang="en" itemscope itemtype="http://schema.org/WebPage">
 <title itemprop="name">SVG Bouncing Ball Animation</title>
 <span hidden itemprop="author">Marc Fawzi</span>
-<span hidden itemprop="dateCreated">March 21, 2013</span>
+<span hidden itemprop="dateCreated">Feb 21, 2013</span>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -13,7 +13,7 @@
         This app uses "OrganicJS", a self-authored reusable component pattern and feather-weight framework
 
         Organic supports reusable components with chain*able properties and public methods, dynamic setters/getters,
-        and a contextual component repo (for sharing data/behavior among components in a decoupled, soft manner)
+        and a contextual component cache (for sharing data/behavior among components in a decoupled, soft manner)
 
         The main file is organic.js. However, the component pattern is partly implemented in the app file (bouncy.js)
 
@@ -77,7 +77,7 @@
                 .width(500)
                 .height(500)
                 .fill("lightgray")
-                // save component to cache, using "widget context/component type" (i.e. widget_1/board) as path
+                // save component to cache, using "widget context/component name" (i.e. widget_1/board) as path
                 .provide('board')
                 //draw
                 .draw();
@@ -88,7 +88,7 @@
                 // data model scope
                 .scope('model_1')
                 // consume soft dependencies from cache into specific methods or properties
-                .consume([{type: 'board', into: 'animate'}])
+                .consume([{name: 'board', into: 'animate'}])
                 // settings
                 .elem($('.ball1'))
                 .radius(10)
