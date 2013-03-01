@@ -1,6 +1,6 @@
 /*
 
- OrganicJS is a self-authored reusable component pattern and feather-weight framework
+ OrganicJS is a reusable component pattern and feather-weight micro-framework
 
  Organic supports reusable components with chain*able properties and public methods, dynamic setters/getters,
  and a contextual component cache (for sharing data/behavior among components in a decoupled, soft manner)
@@ -112,7 +112,7 @@
     //
     // the scope specified and returned by the component's .model()
 
-    app.model = function Model() {
+    app.model = app.model || function Model() {
 
         var obj = {}
 
@@ -142,6 +142,21 @@
             return obj;
         }
         return obj;
+    }
+
+    app.template = app.template || function Template(tmpl, cls) {
+
+        var div = document.createElement("div")
+
+        div.innerHTML = tmpl.html()
+
+        div.setAttribute("class", cls)
+
+        var frag = document.createDocumentFragment();
+
+        frag.appendChild(div)
+
+        return frag;
     }
 
     window.app = app;

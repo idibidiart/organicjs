@@ -70,8 +70,7 @@
             obj.elem().attr("max", obj.max())
             obj.elem().attr("value", obj.value())
 
-            obj.elem().prop("hidden", null)
-            obj.elem().css({visibility: "visible" ,position: "absolute", left: obj.left(), top: obj.top()})
+            obj.elem().css({position: "absolute", left: obj.left(), top: obj.top()})
 
             return obj;
         }
