@@ -11,7 +11,7 @@ Example's Features:
 
 OrganicJS Current Architecture Features:
 
-1. Reusable component architecture
+1. Reusable component architecture w/ support for HTML5/SVG templates
 
 2. Chainable methods and properties (easy to unit test via automated means since all properties and methods are directly testable in any order, with any data) 
 
@@ -26,4 +26,4 @@ resulting in an appropriately light plugin pattern
 
 7. Micro size: less than 50 lines of code
 
-More to come (specifically, events abstracted down to signals, SEO-aware routing/push state functionality and support for Web Components W3C standard e.g. Chrome Beta's <template> tag)
+More to come (specifically, events abstracted down to signals, SEO-aware routing/push state functionality)
