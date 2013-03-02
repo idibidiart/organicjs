@@ -22,15 +22,15 @@
 </head>
 <body>
 
-<div hidden class='widget1-template'>
-<input type="range" class="slider"/>
+<div hidden class='widget1-template'>    <!--- first template -->
+    <input type="range" class="slider"/>
     <div class='svgWrapper'>
         <svg class='svgBox' xmlns="http://www.w3.org/2000/svg"
              preserveAspectRatio="xMinYMin meet" viewbox='0 0 1280 960'>
             <!-- board -->
             <rect class="board" />
             <!-- ball -->
-            <circle hidden class="ball-template" />
+            <circle hidden class="ball-template" />  <!--- second nested template  -->
         </svg>
     </div>
 </div>
