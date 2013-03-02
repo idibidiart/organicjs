@@ -68,6 +68,9 @@
         // render the first instance of ball using the template for ball
         app.render($('.ball-template'), "ball-instance1")
 
+        // render the second instance of ball using the template for ball
+        app.render($('.ball-template'), "ball-instance2")
+
         // render first instance of widget1 using the template for widget1
         app.render($('.widget1-template'), "widget1-instance1")
 
@@ -120,10 +123,41 @@
                 // draw
                 .draw();
 
+        var ball2 = app.ball(cache, model)
+                // widget context
+                .widget('widget_1')
+                // data model scope
+                .scope('model_1')
+                // consume soft dependencies from cache into specific methods or properties
+                .consume([{name: 'board', into: 'animate'}])
+                // settings
+                .elem($('.widget1-instance1 .ball-instance2'))
+                .radius(ball1.radius() * 2)
+                .dx(6)
+                .dy(12)
+                //
+                // Feature: can use a value-producing closure (a function that returns a function
+                // that returns a value) as an argument instead of a regular value-producing
+                // function so as have the inner function generate the value dynamically
+                // every time the property is read (dynamic properties are very useful)
+                //
+                // Feature: "this" in functions and closures refers to the component instance
+                //
+                .x(function() {
+                    return board1.left() + (board1.width() / 3)
+                })
+                .y(function() {
+                    return  board1.top() + (board1.height() / 2)
+                })
+                .fill("blue")
+                // draw
+                .draw();
+
         $('.widget1-instance1 .board').bind("click", function() {
 
             if (!ball1.animating()) {
                ball1.animate()
+               ball2.animate()
             } else {
                // ball1.kick()
             }
@@ -144,7 +178,7 @@
                 .max("50")
                 .value("10")
                 // method that takes a function and $.binds it to the slider's 'change' event
-                .onChange(function() { ball1.resize(this.value)})
+                .onChange(function() { ball1.resize(this.value); ball2.resize(this.value * 2)})
                 //setup
                 .init();
 
