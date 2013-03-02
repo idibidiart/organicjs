@@ -145,19 +145,37 @@
         return obj;
     }
 
-    app.template = app.template || function Template(tmpl, cls) {
+    app.render = app.render || function Template(tmpl, cls) {
 
-        var div = document.createElement("div")
+        if (typeof tmpl[0].innerHTML == 'undefined' && tmpl[0].textContent == 'undefined')
+            throw new Error("invalid root element in template").stack
 
-        div.innerHTML = tmpl.html()
+        if (!cls)
+            throw new Error("new instance 'class' must be specified").stack
 
-        div.setAttribute("class", cls)
+        var el = document.createElement(tmpl[0].tagName)
+
+        if (tmpl[0].innerHTML) {
+            el.innerHTML = tmpl[0].innerHTML
+        } else {
+            el.textContent = tmpl[0].textContent
+        }
+
+        var xmlns = tmpl[0].getAttribute("xmlns")
+
+        if (xmlns) el.setAttribute("xlmns", xmlns)
+
+        el.setAttribute("class", cls)
 
         var frag = document.createDocumentFragment();
 
-        frag.appendChild(div)
+        frag.appendChild(el)
 
-        return frag;
+        console.log(tmpl[0].parentNode)
+
+        tmpl[0].parentNode.appendChild(frag);
+
+        frag = null;
     }
 
     window.app = app;

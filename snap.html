@@ -30,12 +30,11 @@
             <!-- board -->
             <rect class="board" />
             <!-- ball -->
-            <circle class="ball" />
+            <circle hidden class="ball-template" />
         </svg>
     </div>
 </div>
 
-<div id='c'></div>
 </body>
 
 <!-- Self-authored micro-framework -->
@@ -64,8 +63,15 @@
 
         var model = app.model()
 
-        // decide where you want to put the widget instance e.g. append to document.body
-        document.body.appendChild(app.template($('.widget1-template'), "widget1-instance1"))
+        // rendering templates starts from most inner template
+
+        // render the first instance of ball using the template for ball
+        app.render($('.ball-template'), "ball-instance1")
+
+        // render first instance of widget1 using the template for widget1
+        app.render($('.widget1-template'), "widget1-instance1")
+
+        console.log($('.ball-instance1'))
 
         var board1 = app.board(cache, model)
                 // cache context
@@ -92,7 +98,7 @@
                 // consume soft dependencies from cache into specific methods or properties
                 .consume([{name: 'board', into: 'animate'}])
                 // settings
-                .elem($('.widget1-instance1 .ball'))
+                .elem($('.widget1-instance1 .ball-instance1'))
                 .radius(10)
                 .dx(2)
                 .dy(4)
