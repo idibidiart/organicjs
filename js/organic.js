@@ -105,9 +105,9 @@
     // scope that may transcend the widget context.
     //
     // use model.create("scope", {key1: value, key2: value, etc}) to create new properties
-    // use model.propertyName("scope") to get the value for a property in the given scope
-    // use model.propertyName("scope", value) to set the value for a property in the given scope
-    // use console.log(model.entries()) to view all entries for all components
+    // use model.keyName("scope") to get the value for a key in the given scope
+    // use model.keyName("scope", value) to set the value for a key in the given scope
+    // use console.log(model.keys()) to view all keys for all scopes
     //
     // setters are chain-able
     //
@@ -117,7 +117,7 @@
 
         var obj = {}
 
-        obj.entries = function() { return obj}
+        obj.keys = function() { return obj}
 
         obj.create = function(scope, json) {
 
@@ -145,37 +145,79 @@
         return obj;
     }
 
-    app.render = app.render || function Template(tmpl, cls) {
+    app.render = app.render || function Template(template, index) {
 
-        if (typeof tmpl[0].innerHTML == 'undefined' && tmpl[0].textContent == 'undefined')
+        // jQuery to native
+        var tmpl = template[0] || template;
+
+        if (typeof tmpl.getAttribute("template") == 'undefined')
+            throw new Error("element is not a template").stack
+
+        if (typeof tmpl.innerHTML == 'undefined' && tmpl.textContent == 'undefined')
             throw new Error("invalid root element in template").stack
 
-        if (!cls)
-            throw new Error("new instance 'class' must be specified").stack
+        if (typeof index == 'undefined')
+            throw new Error("new instance index must be specified").stack
 
-        var el = document.createElement(tmpl[0].tagName)
+        // start of custom cloning
 
-        if (tmpl[0].innerHTML) {
-            el.innerHTML = tmpl[0].innerHTML
+        var el = document.createElement(tmpl.tagName);
+
+        // copy node's html or text content (like clone(deep) but without invisible text nodes)
+        if (typeof tmpl.innerHTML != 'undefined') {
+            el.innerHTML = tmpl.innerHTML
         } else {
-            el.textContent = tmpl[0].textContent
+            el.textContent = tmpl.textContent
         }
 
-        var xmlns = tmpl[0].getAttribute("xmlns")
-
-        if (xmlns) el.setAttribute("xlmns", xmlns)
-
-        el.setAttribute("class", cls)
+        for (var attr, i = 0, attributes = tmpl.attributes, length =attributes.length; i < length; i++) {
+            attr = attributes.item(i)
+            if (attr.nodeName != 'template' && attr.nodeName != 'd' && attr.nodeName != 'id')
+                el.setAttribute(attr.nodeName, attr.nodeValue);
+            else if (attr.nodeName = 'd')
+                el.setAttribute("d", attr.nodeValue + "-instance-" + index)
+        }
 
         var frag = document.createDocumentFragment();
 
         frag.appendChild(el)
 
-        console.log(tmpl[0].parentNode)
+        // end of custom cloning
 
-        tmpl[0].parentNode.appendChild(frag);
+        // insert new instance in place
+        tmpl.parentNode.appendChild(frag);
 
         frag = null;
+    }
+
+    app.save = app.save || function Template(template) {
+
+        // jQuery to native
+        var tmpl = template[0] || template;
+
+        if (typeof tmpl.getAttribute("template") == 'undefined')
+            throw new Error("element is not a template").stack
+
+        if (typeof tmpl.innerHTML != 'undefined') {
+            if (typeof tmpl._cache == 'undefined') tmpl._cache = tmpl.innerHTML
+        } else {
+            if (typeof tmpl._cache == 'undefined') tmpl._cache = tmpl.textContent
+        }
+    }
+
+    app.restore = app.restore || function Template(template) {
+
+        // jQuery to native
+        var tmpl = template[0] || template;
+
+        if (typeof tmpl.getAttribute("template") == 'undefined')
+            throw new Error("element is not a template").stack
+
+        if (typeof tmpl.innerHTML != 'undefined') {
+            if (tmpl.innerHTML != tmpl._cache) tmpl.innerHTML = tmpl._cache
+        } else {
+            if (tmpl.textContent != tmpl._cache) tmpl.textContent = tmpl._cache
+        }
     }
 
     window.app = app;

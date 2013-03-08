@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- liquid layout -->
     <link href="css/snap.css" rel="stylesheet" type="text/css" />
+    <link href="css/organic.css" rel="stylesheet" type="text/css" />
     <!-- Note --
 
         This app uses "OrganicJS"
@@ -22,15 +23,17 @@
 </head>
 <body>
 
-<div hidden class='widget1-template'>    <!--- first template -->
-    <input type="range" class="slider"/>
-    <div class='svgWrapper'>
-        <svg class='svgBox' xmlns="http://www.w3.org/2000/svg"
+<!-- id's are replaced with d's to avoid polluting JS window namespace -->
+
+<div template d="widget1">    <!--- first template -->
+    <input type="range" d="slider"/>
+    <div d='svgWrapper'>
+        <svg d='svgBox' xmlns="http://www.w3.org/2000/svg"
              preserveAspectRatio="xMinYMin meet" viewbox='0 0 1280 960'>
             <!-- board -->
-            <rect class="board" />
+            <rect d="board" />
             <!-- ball -->
-            <circle hidden class="ball-template" />  <!--- second nested template  -->
+            <circle template d="ball" />  <!--- second nested template  -->
         </svg>
     </div>
 </div>
@@ -48,13 +51,11 @@
 
     // Notes
     //
-    // This in-line script does *NOT* go against testability
+    // The in-line script shows how to render templates and how to
+    // access each component's public properties and methods
     //
-    // It serves as an example of how to access each component's public
-    // properties and methods
-    //
-    // Hooking up *dynamic* unit tests with JSCheck could make a nice
-    // extension to this exercise...
+    // Hooking up application level unit tests would make a nice extension
+    // to this example
 
     (function() {
 
@@ -63,18 +64,22 @@
 
         var model = app.model()
 
-        // rendering templates starts from most inner template
+        // rendering templates starts from inner most template (depth first, post order)
 
-        // render the first instance of ball using the template for ball
-        app.render($('.ball-template'), "ball-instance1")
+        // save original source of widget1  (need only be called once)
+        app.save($('[d="widget1"]'))
 
-        // render the second instance of ball using the template for ball
-        app.render($('.ball-template'), "ball-instance2")
+        // render instance 1 of ball in-place, using the nested template for ball
+        app.render($('[d="widget1"] [d="ball"]'), 1)
 
-        // render first instance of widget1 using the template for widget1
-        app.render($('.widget1-template'), "widget1-instance1")
+        // render instance 2 of ball in-place, using the nested template for ball
+        app.render($('[d="widget1"] [d="ball"]'), 2)
 
-        console.log($('.ball-instance1'))
+        // render instance 1 of widget1 in-place, using the template for widget1
+        app.render($('[d="widget1"]'), 1)
+
+        // restore original source of widget1 so it may be reused
+        app.restore($('[d="widget1"]'))
 
         var board1 = app.board(cache, model)
                 // cache context
@@ -82,7 +87,7 @@
                 // data model scope
                 .scope('model_1')
                 //settings
-                .elem($('.widget1-instance1 .board'))
+                .elem($('[d="widget1-instance-1"] [d="board"]'))
                 .top(100)
                 .left(100)
                 .width(500)
@@ -101,7 +106,7 @@
                 // consume soft dependencies from cache into specific methods or properties
                 .consume([{name: 'board', into: 'animate'}])
                 // settings
-                .elem($('.widget1-instance1 .ball-instance1'))
+                .elem($('[d="widget1-instance-1"] [d="ball-instance-1"]'))
                 .radius(10)
                 .dx(2)
                 .dy(4)
@@ -131,7 +136,7 @@
                 // consume soft dependencies from cache into specific methods or properties
                 .consume([{name: 'board', into: 'animate'}])
                 // settings
-                .elem($('.widget1-instance1 .ball-instance2'))
+                .elem($('[d="widget1-instance-1"] [d="ball-instance-2"]'))
                 .radius(ball1.radius() * 2)
                 .dx(6)
                 .dy(12)
@@ -153,7 +158,7 @@
                 // draw
                 .draw();
 
-        $('.widget1-instance1 .board').bind("click", function() {
+        $('[d="widget1-instance-1"] [d="board"]').bind("click", function() {
 
             if (!ball1.animating()) {
                ball1.animate()
@@ -170,7 +175,7 @@
                 // data model scope
                 .scope('model1')
                 //settings
-                .elem($('.widget1-instance1 .slider'))
+                .elem($('[d="widget1-instance-1"] [d="slider"]'))
                 // need to understand viewBox better w/r/t positioning, couple magic ratios follow
                 .left("7%")
                 .top("1%")
