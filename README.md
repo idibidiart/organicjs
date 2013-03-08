@@ -19,9 +19,9 @@ OrganicJS Current Architecture Features:
 
 1. Reusable component architecture
 
-2. Nested HTML5/SVG templates with in-place rendering
+2. Nest*able, reusable HTML5/+SVG templates with in-place rendering
 
-3. Chainable methods and properties (easy to unit test via automated means since all properties and methods are directly testable in any order, with any data)
+3. Chain*able methods and properties (easy to unit test via automated means since all properties and methods are directly testable in any order, with any data)
 
 4. Closures allowed as property settings, allowing for dynamic properties (value is never static in such case)
 
@@ -32,6 +32,6 @@ resulting in an appropriately light plugin pattern
 
 7. Scoped Data Model for sharing mutable data structures across widget contexts
 
-8. Micro size: less than 50 lines of code
+8. Micro size: less than 500 lines of code
 
 More to come (specifically, events abstracted down to signals, SEO-aware routing/push state functionality)
