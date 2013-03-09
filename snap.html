@@ -69,13 +69,13 @@
         // save original source of widget1  (need only be called once)
         app.save($('[d="widget1"]'))
 
-        // render instance 1 of ball in-place, using the nested template for ball
-        app.render($('[d="widget1"] [d="ball"]'), 1)
+        // render instance 1 of ball, in place, using the nested template for ball
+        app.render($('[d="widget1"] [d="ball"]'), "1")
 
-        // render instance 2 of ball in-place, using the nested template for ball
-        app.render($('[d="widget1"] [d="ball"]'), 2)
+        // render instance 2 of ball, in place, using the nested template for ball
+        app.render($('[d="widget1"] [d="ball"]'), "2")
 
-        // render instance 1 of widget1 in-place, using the template for widget1
+        // render instance 1 of widget1, in place, using the template for widget1
         app.render($('[d="widget1"]'), 1)
 
         // restore original source of widget1 so it may be reused

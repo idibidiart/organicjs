@@ -34,4 +34,4 @@ resulting in an appropriately light plugin pattern
 
 8. Micro size: less than 500 lines of code
 
-More to come (specifically, events abstracted down to signals, SEO-aware routing/push state functionality)
+More to come (events abstracted down to signals and SEO-aware routing/push state functionality)

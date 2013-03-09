@@ -198,11 +198,8 @@
         if (typeof tmpl.getAttribute("template") == 'undefined')
             throw new Error("element is not a template").stack
 
-        if (typeof tmpl.innerHTML != 'undefined') {
-            if (typeof tmpl._cache == 'undefined') tmpl._cache = tmpl.innerHTML
-        } else {
-            if (typeof tmpl._cache == 'undefined') tmpl._cache = tmpl.textContent
-        }
+        tmpl._clone = tmpl.cloneNode(true)
+
     }
 
     app.restore = app.restore || function Template(template) {
@@ -213,11 +210,16 @@
         if (typeof tmpl.getAttribute("template") == 'undefined')
             throw new Error("element is not a template").stack
 
-        if (typeof tmpl.innerHTML != 'undefined') {
-            if (tmpl.innerHTML != tmpl._cache) tmpl.innerHTML = tmpl._cache
-        } else {
-            if (tmpl.textContent != tmpl._cache) tmpl.textContent = tmpl._cache
-        }
+        if (!tmpl._clone)
+            throw new Error("must save before restore").stack
+
+        var parentNode = tmpl.parentNode,
+            clone = tmpl._clone;
+
+        parentNode.removeChild(tmpl);
+
+        parentNode.appendChild(clone)
+
     }
 
     window.app = app;
