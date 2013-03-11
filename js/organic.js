@@ -55,7 +55,6 @@
                 return obj.props.provide;
             }
         }
-
     }
 
     // Contextual Component Cache
@@ -94,7 +93,6 @@
         }
 
         return obj;
-
     }
 
     // Scoped Data Model
@@ -145,81 +143,67 @@
         return obj;
     }
 
-    app.render = app.render || function Template(template, index) {
+    app.create = app.create || function Create(element, n) {
 
         // jQuery to native
-        var tmpl = template[0] || template;
+        var el = element[0] || element;
 
-        if (typeof tmpl.getAttribute("template") == 'undefined')
-            throw new Error("element is not a template").stack
+        if (el.nodeType != 1)
+            throw new Error("Can't use this node type").stack
 
-        if (typeof tmpl.innerHTML == 'undefined' && tmpl.textContent == 'undefined')
-            throw new Error("invalid root element in template").stack
-
-        if (typeof index == 'undefined')
-            throw new Error("new instance index must be specified").stack
+        if (typeof n == 'undefined')
+            throw new Error("Can't create without name or index").stack
 
         // start of custom cloning
 
-        var el = document.createElement(tmpl.tagName);
+        var node = document.createElement(el.tagName);
 
         // copy node's html or text content (like clone(deep) but without invisible text nodes)
-        if (typeof tmpl.innerHTML != 'undefined') {
-            el.innerHTML = tmpl.innerHTML
+        if (typeof node.innerHTML != 'undefined') {
+            node.innerHTML = el.innerHTML
         } else {
-            el.textContent = tmpl.textContent
+            node.textContent = el.textContent
         }
 
-        for (var attr, i = 0, attributes = tmpl.attributes, length =attributes.length; i < length; i++) {
+        for (var attr, i = 0, attributes = el.attributes, length =attributes.length; i < length; i++) {
             attr = attributes.item(i)
-            if (attr.nodeName != 'template' && attr.nodeName != 'd' && attr.nodeName != 'id')
-                el.setAttribute(attr.nodeName, attr.nodeValue);
-            else if (attr.nodeName = 'd')
-                el.setAttribute("d", attr.nodeValue + "-instance-" + index)
+            if (attr.nodeName != 'create' && attr.nodeName != 'id')
+                node.setAttribute(attr.nodeName, attr.nodeValue);
         }
+
+        node.setAttribute("n", n)
 
         var frag = document.createDocumentFragment();
 
-        frag.appendChild(el)
+        frag.appendChild(node)
 
         // end of custom cloning
 
         // insert new instance in place
-        tmpl.parentNode.appendChild(frag);
+        el.parentNode.appendChild(frag);
 
         frag = null;
     }
 
-    app.save = app.save || function Template(template) {
+    app.save = app.save || function Save(element) {
 
         // jQuery to native
-        var tmpl = template[0] || template;
+        var el = element[0] || element;
 
-        if (typeof tmpl.getAttribute("template") == 'undefined')
-            throw new Error("element is not a template").stack
-
-        tmpl._clone = tmpl.cloneNode(true)
-
+        el._clone = el.cloneNode(true)
     }
 
-    app.restore = app.restore || function Template(template) {
+    app.restore = app.restore || function Restore(element) {
 
         // jQuery to native
-        var tmpl = template[0] || template;
+        var el = element[0] || element;
 
-        if (typeof tmpl.getAttribute("template") == 'undefined')
-            throw new Error("element is not a template").stack
+        var parentNode = el.parentNode,
+            clone = el._clone;
 
-        if (!tmpl._clone)
-            throw new Error("must save before restore").stack
+        parentNode.removeChild(el);
 
-        var parentNode = tmpl.parentNode,
-            clone = tmpl._clone;
-
-        parentNode.removeChild(tmpl);
-
-        parentNode.appendChild(clone)
-
+        parentNode.appendChild(clone);
     }
 
     window.app = app;
