@@ -19,8 +19,8 @@ OrganicJS Current Architecture Features:
 
 Reusable component framework with:
 
-1. Chainable methods and properties (easy to unit test via automated means since all properties and methods are directly testable in
-any order, with any arguments)
+1. Chainable methods and properties (easy to unit test via automated means since all properties and methods are directly
+testable in any order, with any arguments)
 
 2. Closures allowed as property settings, allowing for dynamic properties (value is never static in such case)
 
@@ -28,8 +28,8 @@ any order, with any arguments)
 
 4. Functions in method arguments may be bound to element to handle DOM events
 
-4. Provide/consume paradigm via Contextual Object Cache allows decoupled sharing of data and behavior across components,
-without needing to resort to composition, resulting in an appropriately light plugin pattern
+4. Provide/consume paradigm allows decoupled sharing of data and behavior across components, using Contextual Object
+Cache, without needing to resort to composition, resulting in an appropriately light pattern
 
 5. Scoped Data Model for sharing mutable data structures across widget contexts
 
