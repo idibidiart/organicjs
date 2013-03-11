@@ -28,10 +28,10 @@ testable in any order, with any arguments)
 
 4. Functions in method arguments may be bound to element to handle DOM events
 
-4. Provide/consume paradigm allows decoupled sharing of data and behavior across components, using Contextual Object
+5. Provide/consume paradigm allows decoupled sharing of data and behavior across components, using Contextual Object
 Cache, without needing to resort to composition, resulting in an appropriately light pattern
 
-5. Scoped Data Model for sharing mutable data structures across widget contexts
+6. Scoped Data Model for sharing mutable data structures across widget contexts
 
 Micro size: less than 500 lines of code
 
