@@ -26,13 +26,23 @@
 
         app.build(obj, cache, model);
 
-        obj.draw = function () {
+        obj.render = function () {
 
-            obj.elem().attr("x", obj.left());
-            obj.elem().attr("y", obj.top());
-            obj.elem().attr("width", obj.width());
-            obj.elem().attr("height", obj.height());
-            obj.elem().attr("fill", obj.fill());
+            var elem = obj.elem()[0] || obj.elem()
+
+            elem.setAttributeNS(null, "x", obj.left());
+
+            elem.setAttributeNS(null, "y", obj.top());
+            elem.setAttributeNS(null, "width", obj.width());
+            elem.setAttributeNS(null, "height", obj.height());
+            elem.setAttributeNS(null, "fill", obj.fill());
+
+            return obj;
+        }
+
+        obj.onClick = function(func) {
+
+            $(obj.elem()).bind("click", func)
 
             return obj;
         }
@@ -51,6 +61,7 @@
         obj.props.elem = undefined
         obj.props.left = undefined
         obj.props.top = undefined
+        obj.props.display = undefined
         obj.props.min = undefined
         obj.props.max = undefined
         obj.props.value = undefined
@@ -59,18 +70,20 @@
 
         obj.onChange = function(func) {
 
-            obj.elem().bind("change", func)
+            $(obj.elem()).bind("change", func)
 
             return obj;
         }
 
-        obj.init = function() {
+        obj.render = function() {
 
-            obj.elem().attr("min", obj.min())
-            obj.elem().attr("max", obj.max())
-            obj.elem().attr("value", obj.value())
+            var elem = obj.elem()[0] || obj.elem()
 
-            obj.elem().css({position: "absolute", left: obj.left(), top: obj.top()})
+            elem.setAttributeNS(null, "min", obj.min())
+            elem.setAttributeNS(null, "max", obj.max())
+            elem.setAttributeNS(null, "value", obj.value())
+
+            $(elem).css({"margin-left": obj.left(), "margin-top": obj.top(), display: obj.display()})
 
             return obj;
         }
@@ -90,6 +103,7 @@
        obj.props.radius = undefined;
        obj.props.dx = undefined;
        obj.props.dy = undefined;
+       obj.props.speed = undefined;
        obj.props.x = undefined;
        obj.props.y = undefined;
        obj.props.fill = undefined;
@@ -98,21 +112,14 @@
 
        app.build(obj, cache, model);
 
-       obj.draw = function() {
+       obj.render = function() {
 
-           obj.elem().attr("r", obj.radius());
-           obj.elem().attr("cx", obj.x());
-           obj.elem().attr("cy", obj.y());
-           obj.elem().attr("fill", obj.fill());
+           var elem = obj.elem()[0] || obj.elem()
 
-           return obj;
-       }
-
-       obj.resize = function(val) {
-
-           rChange = val - obj.props.radius;
-
-           obj.elem().attr("r", val);
+           elem.setAttributeNS(null, "r", obj.radius());
+           elem.setAttributeNS(null, "cx", obj.x());
+           elem.setAttributeNS(null, "cy", obj.y());
+           elem.setAttributeNS(null, "fill", obj.fill());
 
            return obj;
        }
@@ -121,11 +128,13 @@
 
            animID = window.requestAnimationFrame(obj.animate)
 
-           obj.x(obj.x() + obj.dx());
-           obj.y(obj.y() + obj.dy());
+           var elem = obj.elem()[0] || obj.elem()
 
-           obj.elem().attr("cx", obj.x())
-           obj.elem().attr("cy", obj.y())
+           obj.x((obj.x() + obj.dx() * obj.speed()));
+           obj.y((obj.y() + obj.dy() * obj.speed()));
+
+           elem.setAttributeNS(null, "cx", obj.x())
+           elem.setAttributeNS(null, "cy", obj.y())
 
            // In OrganicJS, components do not depend on other components directly but on anonymous data and behavior
            // from other components that are cached in an isolated context.
@@ -156,8 +165,8 @@
            }
 
            // try to find a component in cache that has that name
-           var cached = cache.get(obj.widget() + "/" + consumed) ?
-                        cache.get(obj.widget() + "/" + consumed) :
+           var cachedObject = cache.get(obj.cache() + "/" + consumed) ?
+                        cache.get(obj.cache() + "/" + consumed) :
            // else replace with the expected data/behaviors
                         {
                             left: function() {return 0},
@@ -169,16 +178,16 @@
            // to bounce it, mirror the ball's path after it runs into an edge
 
            // left or right
-           if (obj.x() + obj.dx() > cached.width() - obj.radius() - rChange + cached.left() ||
+           if (obj.x() + obj.dx() > cachedObject.width() - obj.radius() - rChange + cachedObject.left() ||
 
-               obj.x() + obj.dx() < obj.radius() + rChange + cached.left())
+               obj.x() + obj.dx() < obj.radius() + rChange + cachedObject.left())
 
                     obj.dx(-obj.dx());
 
            // top or bottom
-           if (obj.y() + obj.dy() < obj.radius() + rChange + cached.top() ||
+           if (obj.y() + obj.dy() < obj.radius() + rChange + cachedObject.top() ||
 
-               obj.y() + obj.dy() > cached.height() - obj.radius() - rChange + cached.top())
+               obj.y() + obj.dy() > cachedObject.height() - obj.radius() - rChange + cachedObject.top())
 
            {
 

@@ -6,18 +6,18 @@ OrganicJS Code Sample
 OrganicJS is a reusable component pattern and feather-weight micro-framework
 
 OrganicJS supports reusable components with chain*able properties and public methods, dynamic setters/getters,
-HTML/SVG in-place cloning, and a contextual component cache (for sharing data/behavior among components in a
-decoupled, soft manner)
+reusable widget markup, using nestable HTML/SVG fragments with in-place cloning and rendering, and
+sharing of data/behavior among components in a soft, decoupled manner, using contextual component caching.
 
 Example's Features: 
 
 - Click on Ball to see it bounce inside rectangle.
-- Change the slider position to change ball size as it bounces
-- Resize browser window and see everything resizing (courtesy of SVG liquid layout, nothing has to be recomputed)
+- Change the slider position to change ball properties
+- Resize browser window and see everything resizing (courtesy of SVG liquid layout)
 
 OrganicJS Current Architecture Features:
 
-Reusable component framework, including:
+Reusable JS component framework with support for:
 
 1. Chainable methods and properties (easy to unit test via automated means since all properties and methods are directly
 testable in any order, with any arguments)
@@ -28,12 +28,12 @@ testable in any order, with any arguments)
 
 4. Functions in method arguments may be bound to element to handle DOM events
 
-5. Provide/consume paradigm allows decoupled sharing of data and behavior across components, using Contextual Object
-Cache, without needing to resort to composition, resulting in an appropriately light pattern
+5. Provide/Consume pattern, which allows for sharing of data and behavior between components, in a soft, decoupled manner,
+via Contextual Component Cache.
 
-6. Scoped Data Model for sharing mutable data structures across widget contexts
+6. Scoped Data Model for sharing mutable data structures across widget contexts.
 
-7. In-place cloning of HTML/SVG nodes and node hierarchies allows reuse of DOM structures
+Supports reusable widget markup with nestable HTML/SVG fragments and in-place fragment cloning and rendering.
 
 Micro size: less than 500 lines of code
 
