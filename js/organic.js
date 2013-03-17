@@ -3,14 +3,14 @@
  OrganicJS is a reusable component pattern and feather-weight micro-framework
 
  OrganicJS supports reusable components with chain*able properties and public methods, dynamic setters/getters,
- reusable widget markup, using nestable HTML/SVG fragments with in-place cloning and rendering, and
+ reusable widget markup with nestable HTML5/SVG fragments and in-place cloning and rendering, and
  sharing of data/behavior among components in a soft, decoupled manner, using contextual component caching.
 
  @MarcFawzi
 
  Last modified: MARCH 16, 2013
 
- v0.2
+ v0.1
 
  */
 
