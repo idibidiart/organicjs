@@ -50,6 +50,11 @@
         <!--- nested SVG fragment -->
         <circle frag="ball" />
     </g>
+    <g>
+        <text x="20" y="840" font-size = "48">Each widget is derived from the same HTML/SVG/JS building blocks
+            yet each has different properties and behavior...</text>
+    </g>
+
 </svg>
 
 
@@ -310,9 +315,6 @@
 <p>
 Below is the code for creating this app (the components themselves are defined in bouncy.js)
 </p>
-<p>
-Each widget is derived from the same building HTML/SVG/JS blocks yet each has different properties and behavior...
-</p>
 <pre class="prettyprint">
 
    &lt;!-- Define widgets with nestable, reusable HTML5/SVG fragments for in-place cloning and rendering --&gt;
@@ -332,8 +334,6 @@ Each widget is derived from the same building HTML/SVG/JS blocks yet each has di
         viewbox="0 0 960 960"
         height="60%"&gt;
        &lt;!--- SVG fragment --&gt;
-
-       &lt;text x="20" y="100" font-size = "72"&gt;Click on each box and use corresponding slider&lt;/text&gt;
        &lt;g frag="demoWidget" transform="translate(0, 100)"&gt;
            &lt;!--- nested SVG fragment --&gt;
            &lt;rect frag="board" /&gt;
