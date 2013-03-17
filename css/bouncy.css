@@ -1,0 +1,14 @@
+html {
+    padding: 0;
+    margin: 0;
+}
+body {
+    padding: 0;
+    margin: 0;
+}
+
+svg {
+    background-color: rgb(31, 149, 255);
+    margin-top: 10px;
+}
+
