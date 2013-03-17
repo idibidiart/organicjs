@@ -83,7 +83,7 @@
 
         widgets = [],
         sliderWidgets = [],
-        numWidgets = 3;  // max ... need to
+        numWidgets = 3;
 
         // All widgets in this example are derived from the above-defined HTML/SVG fragments
         // We may iteratively create the required widget instances and configure their properties/methods
@@ -113,7 +113,6 @@
                     .model('scope1')
                     //settings
                     .elem(app.getElementByUUID(sliderWidgets[n].slider_id))
-                    // need to understand viewBox better w/r/t positioning, couple magic ratios follow
                     .left(100)
                     .top(20)
                     .display("block")
@@ -369,7 +368,7 @@ Below is the UI code for creating this app (the components themselves are define
 
                widgets = [],
                sliderWidgets = [],
-               numWidgets = 3;  // max ... need to
+               numWidgets = 3;
 
        // All widgets in this example are derived from the above-defined HTML/SVG fragments
        // We may iteratively create the required widget instances and configure their properties/methods
@@ -399,7 +398,6 @@ Below is the UI code for creating this app (the components themselves are define
                    .model('scope1')
                //settings
                    .elem(app.getElementByUUID(sliderWidgets[n].slider_id))
-               // need to understand viewBox better w/r/t positioning, couple magic ratios follow
                    .left(100)
                    .top(20)
                    .display("block")
