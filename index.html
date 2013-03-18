@@ -228,8 +228,13 @@
                     // model scope says mutable data may be shared across widgets
                     // set this to ('scope' + n) to limit to widget context if there is any chance of collision
                     .model('scope1')
-                    // consume a dependency from cache into a specific method (1:1)
-                    // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
+                    // Feature: consume a dependency (previously cached component) from the contextual component cache
+                    // (accessed as cash context/component name) into a specific method
+                    // Feature: due to 1:1 mapping limit, there is no hard wiring of the dependency's reference
+                    // inside the method (attachment is to data/behavior not resource name)
+                    // To allow for the above, each given resource, e.g. board, may be consumed by many methods,
+                    // but each method may consume only one resource
+                    // This way the resource name may change without breaking any dependent components
                     .consume([{name: 'board', into: 'animate'}])
                     // settings
                     .elem(app.getElementByUUID(widgets[n].ball1_id))
