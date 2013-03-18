@@ -23,16 +23,18 @@ Reusable JS component framework with support for:
 1. Chainable methods and properties (easy to unit test via automated means since all properties and methods are directly
 testable in any order, with any arguments)
 
-2. Closures allowed as property settings, allowing for dynamic properties (value is never static in such case)
+2. Functions in property arguments are bound to component instance to allow inter-dependent properties
 
-3. Functions in property arguments are bound to component instance to allow inter-dependent properties
+3. Closures (both by reference as well as self executing closures) are allowed as property arguments, allowing,
+ in the latter case, dynamic properties (where the returned property value is never static in such case)
 
-4. Functions in method arguments may be bound to element to handle DOM events
+4. Functions in method arguments may be bound to element to handle DOM events, e.g. someComponent.on("click", handler)
+or someComponent.onClick(handler)
 
-5. Provide/Consume pattern, which allows for sharing of data and behavior between components, in a soft, decoupled manner,
-via Contextual Component Cache.
+5. "Provide/Consume" pattern allows for sharing of data and behavior between components, in a soft, decoupled manner,
+via Contextual Component Caching.
 
-6. Scoped Data Model for sharing mutable data structures across widget contexts.
+6. Scoped Data Model for sharing mutable data structures in user defined cross-component cooperation scopes.
 
 Supports reusable widget markup with nestable HTML/SVG fragments and in-place fragment cloning and rendering.
 
