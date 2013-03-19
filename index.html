@@ -231,10 +231,9 @@
                     // Feature: consume a dependency (previously cached component) from the contextual component cache
                     // (accessed as cash context/component name) into a specific method
                     // Feature: due to 1:1 mapping limit, there is no hard wiring of the dependency's reference
-                    // inside the method (attachment is to data/behavior not resource name)
-                    // To allow for the above, each given resource, e.g. board, may be consumed by many methods,
-                    // but each method may consume only one resource
-                    // This way the resource name may change without breaking any dependent components
+                    // inside the method (attachment is to the data/behavior not the resource name)
+                    // While a given resource, e.g. board, may be consumed by many methods in a given component or
+                    // across components, each method may consume only one resource.
                     .consume([{name: 'board', into: 'animate'}])
                     // settings
                     .elem(app.getElementByUUID(widgets[n].ball1_id))
@@ -400,12 +399,12 @@ Below is the code for creating this app (the components themselves are defined i
            app.restore($('[frag="sliderWidget"]'))
 
            sliderWidgets[n].slider = app.slider(cache, model)
-               // cache context says sharing of data/behavior via cache is limited to widget
+                   // cache context says sharing of data/behavior via cache is limited to widget
                    .cache('widget' + n)
-               // model scope says mutable data may be shared across widgets
-               // set this to ('scope' + n) to limit to widget context if there is any chance of collision
+                   // model scope says mutable data may be shared across widgets
+                   // set this to ('scope' + n) to limit to widget context if there is any chance of collision
                    .model('scope1')
-               //settings
+                   //settings
                    .elem(app.getElementByUUID(sliderWidgets[n].slider_id))
                    .left(100)
                    .top(20)
@@ -413,7 +412,7 @@ Below is the code for creating this app (the components themselves are defined i
                    .min("10")
                    .max("50")
                    .value("10")
-               // method that takes a function and $.binds it to the element's change event
+                   // method that takes a function and $.binds it to the element's change event
                    .onChange((function(m) { return function() {
 
                        var that = this;
@@ -470,16 +469,16 @@ Below is the code for creating this app (the components themselves are defined i
            app.restore($('[frag="demoWidget"]'))
 
            widgets[n].board = app.board(cache, model)
-               // cache context says sharing of data/behavior via cache is limited to widget
+                   // cache context says sharing of data/behavior via cache is limited to widget
                    .cache('widget' + n)
-               // model scope says mutable data may be shared across widgets
-               // set this to ('scope' + n) to limit to widget context if there is any chance of collision
+                   // model scope says mutable data may be shared across widgets
+                   // set this to ('scope' + n) to limit to widget context if there is any chance of collision
                    .model('scope1')
-               //settings
+                   //settings
                    .elem($(app.getElementByUUID(widgets[n].board_id)))
                    .top(100)
-               // we may pass a self-executing closure instead of a simple function reference
-               // sp that we may close on inner-scope in the returned function
+                   // we may pass a self-executing closure instead of a simple function reference
+                   // sp that we may close on inner-scope in the returned function
                    .left((function(m) { return function() {
 
                        if (m == 0) return 100;
@@ -497,7 +496,7 @@ Below is the code for creating this app (the components themselves are defined i
                                return "#77CDF2"
                        }
                    }})(n))
-               // save component to cache, using "cache context/component name" (i.e. widget_1/board) as path
+                   // save component to cache, using "cache context/component name" (i.e. widget_1/board) as path
                    .provide('board')
                    .onClick((function(m) { return function () {
                        if (!widgets[m].ball1.animating()) {
@@ -511,30 +510,34 @@ Below is the code for creating this app (the components themselves are defined i
                    .render();
 
            widgets[n].ball1 = app.ball(cache, model)
-               // cache context says sharing of data/behavior via cache is limited to widget
+                   // cache context says sharing of data/behavior via cache is limited to widget
                    .cache('widget' + n)
-               // model scope says mutable data may be shared across widgets
-               // set this to ('scope' + n) to limit to widget context if there is any chance of collision
+                   // model scope says mutable data may be shared across widgets
+                   // set this to ('scope' + n) to limit to widget context if there is any chance of collision
                    .model('scope1')
-               // consume a dependency from cache into a specific method (1:1)
-               // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
+                   // Feature: consume a dependency (previously cached component) from the contextual component cache
+                   // (accessed as cash context/component name) into a specific method
+                   // Feature: due to 1:1 mapping limit, there is no hard wiring of the dependency's reference
+                   // inside the method (attachment is to the data/behavior not the resource name)
+                   // While a given resource, e.g. board, may be consumed by many methods in a given component or
+                   // across components, each method may consume only one resource.
                    .consume([{name: 'board', into: 'animate'}])
-               // settings
+                   // settings
                    .elem(app.getElementByUUID(widgets[n].ball1_id))
                    .radius(10)
                    .dx(2)
                    .dy(4)
                    .speed(1.5)
-               //
-               // Feature: we may pass a reference to a value-producing closure (a function that
-               // returns a function that, when executed during the reading of the property, returns
-               // a value) as an argument to the property instead of the self-executing closure
-               // used in this example. That way the inner function will generate the value dynamically
-               // every time the property is read, resulting in a dynamic property. To do that here,
-               // you may return a closure from the self-executing closure (double closure?)
-               //
-               // Feature: "this" in a returned functions reference defaults to the component instance
-               //
+                   //
+                   // Feature: we may pass a reference to a value-producing closure (a function that
+                   // returns a function that, when executed during the reading of the property, returns
+                   // a value) as an argument to the property instead of the self-executing closure
+                   // used in this example. That way the inner function will generate the value dynamically
+                   // every time the property is read, resulting in a dynamic property. To do that here,
+                   // you may return a closure from the self-executing closure (double closure?)
+                   //
+                   // Feature: "this" in a returned functions reference defaults to the component instance
+                   //
                    .x((function(m) { return function() {
                        return widgets[m].board.left() + (widgets[m].board.width() / 2)
                    }})(n))
@@ -546,15 +549,15 @@ Below is the code for creating this app (the components themselves are defined i
 
            if (n &gt;= 1) {
                widgets[n].ball2 = app.ball(cache, model)
-                   // cache context says sharing of data/behavior via cache is limited to widget context
+                       // cache context says sharing of data/behavior via cache is limited to widget context
                        .cache('widget' + n)
-                   // model scope says mutable data may be shared across widget contexts
-                   // set this to ('scope' + n) to limit to widget context if there is any chance of collision
+                       // model scope says mutable data may be shared across widget contexts
+                       // set this to ('scope' + n) to limit to widget context if there is any chance of collision
                        .model('scope1')
-                   // consume a dependency from cache into a specific method (1:1)
-                   // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
+                       // consume a dependency from cache into a specific method (1:1)
+                       // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
                        .consume([{name: 'board', into: 'animate'}])
-                   // settings
+                       // settings
                        .elem(app.getElementByUUID(widgets[n].ball2_id))
                        .radius(widgets[n].ball1.radius() * 2)
                        .dx(6)
@@ -574,15 +577,15 @@ Below is the code for creating this app (the components themselves are defined i
            if (n &gt;= 2) {
 
                widgets[n].ball3 = app.ball(cache, model)
-                   // cache context says sharing of data/behavior via cache is limited to widget context
+                       // cache context says sharing of data/behavior via cache is limited to widget context
                        .cache('widget' + n)
-                   // model scope says mutable data may be shared across widget contexts
-                   // set this to ('scope' + n) to limit to widget context if there is any chance of collision
+                       // model scope says mutable data may be shared across widget contexts
+                       // set this to ('scope' + n) to limit to widget context if there is any chance of collision
                        .model('scope1')
-                   // consume a dependency from cache into a specific method (1:1)
-                   // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
+                       // consume a dependency from cache into a specific method (1:1)
+                       // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
                        .consume([{name: 'board', into: 'animate'}])
-                   // settings
+                       // settings
                        .elem(app.getElementByUUID(widgets[n].ball3_id))
                        .radius(widgets[n].ball1.radius() * 2.5)
                        .dx(8)
