@@ -26,8 +26,8 @@ testable in any order, with any arguments)
 2. Functions are allowed as property arguments and function's context is bound to component instance to allow for
 inter-dependent properties (properties that reference each other, e.g. someComponent.height(this.width() + 500)
 
-3. Closures (both by reference as well as self executing closures) are allowed as property arguments, allowing,
- in the latter case, dynamic properties (where the returned property value is never static in such case)
+3. Closures, both by reference as well as self executing closures, are allowed as property arguments, allowing,
+ in the former case, dynamic properties (where the returned property value is never static in such case)
 
 4. Functions are allowed as method arguments and their context may be bound to the element (for components with HTML
 or SVG elements) to handle DOM events, e.g. someComponent.on("click", handler) or someComponent.onClick(handler)
