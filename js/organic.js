@@ -9,9 +9,9 @@
 
  @MarcFawzi
 
- Last modified: MARCH 16, 2013
+ Last modified: MARCH 21, 2013
 
- v0.2
+ v0.3
 
  */
 
@@ -151,8 +151,8 @@
         var el = frag[0] || frag;
 
         // make sure the node exists
-        if (!el)
-            throw new Error("Can't find node").stack
+        if (!el.nodeType)
+            throw new Error("argument is not a node").stack
 
         // make sure it's an element
         if (el.nodeType != 1)
