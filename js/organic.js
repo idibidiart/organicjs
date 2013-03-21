@@ -1,5 +1,4 @@
 /*
-
  OrganicJS is a micro-framework for reusable JS+HTML+SVG components
 
  OrganicJS supports reusable JS+HTML+SVG components with chainable properties and public methods, dynamic
@@ -12,7 +11,6 @@
  Last modified: MARCH 21, 2013
 
  v0.3
-
  */
 
 (function(){
