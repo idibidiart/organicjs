@@ -409,6 +409,7 @@ Below is the code for creating this app (the components themselves are defined i
         // clone slider inside the cloned slider widget
         // this jQuery notation is equivalent to:
         // app.getElementByUUID(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
+        // the trick is at every level of the tree, simply select on the parent node for that level
         sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementByUUID(sliderWidgets[n].sliderWidget_id)))
 
         // restore original source of widget fragment to reuse in next iteration
@@ -470,6 +471,7 @@ Below is the code for creating this app (the components themselves are defined i
         // clone board inside cloned widget
         // this jQuery notation is equivalent to:
         // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="board"]')
+        // the trick is at every level of the tree, simply select on the parent node for that level
         widgets[n].board_id = app.new($('[frag="board"]', app.getElementByUUID(widgets[n].widget_id)))
 
         // todo: make number of balls adjustable by defining a widgets[n].widget component with
@@ -478,6 +480,7 @@ Below is the code for creating this app (the components themselves are defined i
         // clone ball 1 in place
         // this jQuery notation is equivalent to:
         // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="ball"]')
+        // the trick is at every level of the tree, simply select on the parent node for that level
         widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
         // clone balls 2 & 3 in place
         if (n &gt;= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
