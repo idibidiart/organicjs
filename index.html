@@ -326,288 +326,300 @@ Below is the code for creating this app (the components themselves are defined i
 </p>
 <pre class="prettyprint">
 
-   &lt;!-- Define widgets with nestable, reusable HTML5/SVG fragments for in-place cloning and rendering --&gt;
+&lt;!-- Define widgets with nestable, reusable HTML5/SVG fragments for in-place cloning and rendering --&gt;
 
-   &lt;!-- HTML widgets container--&gt;
-   &lt;div&gt;
-       &lt;!-- HTML fragment --&gt;
-       &lt;div frag="sliderWidget"&gt;
-           &lt;!-- nested HTML fragment --&gt;
-           &lt;input type="range" frag="slider"/&gt;
-       &lt;/div&gt;
-   &lt;/div&gt;
+&lt;!-- HTML widgets container--&gt;
+&lt;div&gt;
+    &lt;!-- HTML fragment --&gt;
+    &lt;div frag="sliderWidget"&gt;
+        &lt;!-- nested HTML fragment --&gt;
+        &lt;input type="range" frag="slider"/&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
 
-   &lt;!--- SVG widgets container --&gt;
-   &lt;svg xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMinYMin meet"
-        viewbox="0 0 960 960"
-        height="60%"&gt;
-       &lt;!--- SVG fragment --&gt;
-       &lt;g frag="demoWidget" transform="translate(0, 100)"&gt;
-           &lt;!--- nested SVG fragment --&gt;
-           &lt;rect frag="board" /&gt;
-           &lt;!--- nested SVG fragment --&gt;
-           &lt;circle frag="ball" /&gt;
-       &lt;/g&gt;
-   &lt;/svg&gt;
+&lt;!--- SVG widgets container --&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg"
+     preserveAspectRatio="xMinYMin meet"
+     viewbox="0 0 960 960"
+     height="60%"&gt;
+    &lt;!--- SVG fragment --&gt;
+
+    &lt;text x="20" y="100" font-size = "72"&gt;Click on each box and use corresponding slider&lt;/text&gt;
+    &lt;g frag="demoWidget" transform="translate(0, 100)"&gt;
+        &lt;!--- nested SVG fragment --&gt;
+        &lt;rect frag="board" /&gt;
+        &lt;!--- nested SVG fragment --&gt;
+        &lt;circle frag="ball" /&gt;
+    &lt;/g&gt;
+    &lt;g&gt;
+        &lt;text x="20" y="840" font-size = "48"&gt;Each widget is derived from the same HTML/SVG/JS building blocks
+            yet each has different properties and behavior...&lt;/text&gt;
+    &lt;/g&gt;
+
+&lt;/svg&gt;
 
 
-   &lt;/body&gt;
+&lt;/body&gt;
 
-   &lt;!-- OrganicJS --&gt;
-   &lt;script src="js/organic.js"&gt;&lt;/script&gt;
-   &lt;!-- jQuery 1.8.3 --&gt;
-   &lt;script src="js/jquery.min.js"&gt;&lt;/script&gt;
-   &lt;!-- Bouncing ball app --&gt;
-   &lt;script src="js/bouncy.js"&gt;&lt;/script&gt;
+&lt;!-- OrganicJS --&gt;
+&lt;script src="js/organic.js"&gt;&lt;/script&gt;
+&lt;!-- jQuery 1.8.3 --&gt;
+&lt;script src="js/jquery.min.js"&gt;&lt;/script&gt;
+&lt;!-- Bouncing ball app --&gt;
+&lt;script src="js/bouncy.js"&gt;&lt;/script&gt;
+&lt;/script&gt;
 
-   &lt;script&gt;
+&lt;script&gt;
 
-   // Notes
-   //
-   // The in-line script shows how to build the app from components using the widget's markup
-   // and how to access each component's public properties and methods
-   //
-   // Hooking up application level unit tests would make a nice extension
-   // to this example
+// Notes
+//
+// The in-line script shows how to build the app from components using the widget's markup
+// and how to access each component's public properties and methods
+//
+// Hooking up application level unit tests would make a nice extension
+// to this example
 
-   (function() {
+(function() {
 
-       //see organic.js
-       var
-               cache = app.cache(),
-               model = app.model(),
+    //see organic.js
+    var
+            cache = app.cache(),
+            model = app.model(),
 
-               widgets = [],
-               sliderWidgets = [],
-               numWidgets = 3;
+            widgets = [],
+            sliderWidgets = [],
+            numWidgets = 3;
 
-       // All widgets in this example are derived from the above-defined HTML/SVG fragments
-       // We may iteratively create the required widget instances and configure their properties/methods
+    // All widgets in this example are derived from the above-defined HTML/SVG fragments
+    // We may iteratively create the required widget instances and configure their properties/methods
 
-       // save original source of widget fragment
-       app.save($('[frag="sliderWidget"]'))
+    // save original source of widget fragment
+    app.save($('[frag="sliderWidget"]'))
 
-       for (var n = 0; n &lt; numWidgets; n++) {
+    for (var n = 0; n &lt; numWidgets; n++) {
 
-           sliderWidgets[n] = {};
+        sliderWidgets[n] = {};
 
-           // in-place rendering starts from inner most fragment, i.e. "depth first" (post order)
+        // clone slider widget in place
+        sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
-           // clone slider in place
-           sliderWidgets[n].slider_id = app.new($('[frag="sliderWidget"] [frag="slider"]'))
-           // clone slider widget in place
-           sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
+        // clone slider inside the cloned slider widget
+        // this jQuery notation is equivalent to:
+        // app.getElementByUUID(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
+        sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementByUUID(sliderWidgets[n].sliderWidget_id)))
 
-           // restore original source of widget fragment to reuse in next iteration
-           app.restore($('[frag="sliderWidget"]'))
+        // restore original source of widget fragment to reuse in next iteration
+        app.restore($('[frag="sliderWidget"]'))
 
-           sliderWidgets[n].slider = app.slider(cache, model)
-                   // cache context says sharing of data/behavior via cache is limited to widget
-                   .cache('widget' + n)
-                   // model scope says mutable data may be shared across widgets
-                   // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                   .model('myCooperationScope')
-                   //settings
-                   .elem(app.getElementByUUID(sliderWidgets[n].slider_id))
-                   .left(100)
-                   .top(20)
-                   .display("block")
-                   .min("10")
-                   .max("50")
-                   .value("10")
-                   // method that takes a function and $.binds it to the element's change event
-                   .onChange((function(m) { return function() {
+        sliderWidgets[n].slider = app.slider(cache, model)
+            // cache context says sharing of data/behavior via cache is limited to widget
+                .cache('widget' + n)
+            // model scope says mutable data may be shared across widgets
+            // set this to ('scope' + n) to limit to widget if there is any chance of collision
+                .model('myCooperationScope')
+            //settings
+                .elem(app.getElementByUUID(sliderWidgets[n].slider_id))
+                .left(100)
+                .top(20)
+                .display("block")
+                .min("10")
+                .max("50")
+                .value("10")
+            // method that takes a function and $.binds it to the element's change event
+                .onChange((function(m) { return function() {
 
-                       var that = this;
+                    var that = this;
 
-                       if (m == 0) {
-                           widgets[m].ball1
-                                   .radius(function() {
-                                       return +that.value + (that.value &gt; 3 ? 0 : 3);
-                                   })
-                                   .render()
-                       }
-                       if (m == 1) {
-                           widgets[m].ball1
-                                   .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
-                                   .render()
-                           widgets[m].ball2
-                                   .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
-                                   .render()
-                       }
-                       if (m == 2) {
-                           widgets[m].ball1.speed(this.value / 8)
-                           widgets[m].ball2.speed(this.value / 13)
-                           widgets[m].ball3.speed(this.value / 21)
-                       }
-                   }})(n))
-                   .render();
-       }
+                    if (m == 0) {
+                        widgets[m].ball1
+                                .radius(function() {
+                                    return +that.value + (that.value &gt; 3 ? 0 : 3);
+                                })
+                                .render()
+                    }
+                    if (m == 1) {
+                        widgets[m].ball1
+                                .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
+                                .render()
+                        widgets[m].ball2
+                                .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
+                                .render()
+                    }
+                    if (m == 2) {
+                        widgets[m].ball1.speed(this.value / 8)
+                        widgets[m].ball2.speed(this.value / 13)
+                        widgets[m].ball3.speed(this.value / 21)
+                    }
+                }})(n))
+                .render();
+    }
 
-       // save original source of widget fragment
-       app.save($('[frag="demoWidget"]'))
+    // save original source of widget fragment
+    app.save($('[frag="demoWidget"]'))
 
-       for (var n = 0; n &lt; numWidgets; n++) {
+    for (var n = 0; n &lt; numWidgets; n++) {
 
-           widgets[n] = {}
+        widgets[n] = {}
 
-           // in-place rendering starts from inner most fragment, i.e. "depth first" (post order)
+        // clone widget in place
+        widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
 
-           // clone board in place
-           widgets[n].board_id = app.new($('[frag="demoWidget"] [frag="board"]'))
+        // clone board inside cloned widget
+        // this jQuery notation is equivalent to:
+        // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="board"]')
+        widgets[n].board_id = app.new($('[frag="board"]', app.getElementByUUID(widgets[n].widget_id)))
 
-           // todo: make number of balls adjustable by defining a widgets[n].widget component with
-           // todo: .balls(n) property and using that to create n balls (will do in next push)
+        // todo: make number of balls adjustable by defining a widgets[n].widget component with
+        // todo: .balls(n) property and using that to create n balls (will do in next push)
 
-           // clone ball 1 in place
-           widgets[n].ball1_id = app.new($('[frag="demoWidget"] [frag="ball"]'))
-           // clone balls 2 & 3 in place
-           if (n &gt;= 1) widgets[n].ball2_id = app.new($('[frag="demoWidget"] [frag="ball"]'))
-           if (n &gt;= 2) widgets[n].ball3_id = app.new($('[frag="demoWidget"] [frag="ball"]'))
+        // clone ball 1 in place
+        // this jQuery notation is equivalent to:
+        // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="ball"]')
+        widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
+        // clone balls 2 & 3 in place
+        if (n &gt;= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
+        if (n &gt;= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
 
-           // clone widget in place
-           widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
 
-           // restore original source of widget fragment to reuse in next iteration
-           app.restore($('[frag="demoWidget"]'))
+        // restore original source of widget fragment to reuse in next iteration
+        app.restore($('[frag="demoWidget"]'))
 
-           widgets[n].board = app.board(cache, model)
-                   // cache context says sharing of data/behavior via cache is limited to widget
-                   .cache('widget' + n)
-                   // model scope says mutable data may be shared across widgets
-                   // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                   .model('myCooperationScope')
-                   //settings
-                   .elem($(app.getElementByUUID(widgets[n].board_id)))
-                   .top(100)
-                   // we may pass a self-executing closure instead of a simple function reference
-                   // sp that we may close on inner-scope in the returned function
-                   .left((function(m) { return function() {
+        widgets[n].board = app.board(cache, model)
+            // cache context says sharing of data/behavior via cache is limited to widget
+                .cache('widget' + n)
+            // model scope says mutable data may be shared across widgets
+            // set this to ('scope' + n) to limit to widget if there is any chance of collision
+                .model('myCooperationScope')
+            //settings
+                .elem($(app.getElementByUUID(widgets[n].board_id)))
+                .top(100)
+            // we may pass a self-executing closure instead of a simple function reference
+            // sp that we may close on inner-scope in the returned function
+                .left((function(m) { return function() {
 
-                       if (m == 0) return 100;
-                       return widgets[m-1].board.left() + widgets[m-1].board.width() + 20
-                   }})(n))
-                   .width(500)
-                   .height(500)
-                   .fill((function(m) { return function () {
-                       switch (m) {
-                           case 0:
-                               return "#F1D848";
-                           case 1:
-                               return "#FCACD1"
-                           case 2:
-                               return "#77CDF2"
-                       }
-                   }})(n))
-                   // save component to cache, using "cache context/component name" (i.e. widget_1/board) as path
-                   .provide('board')
-                   .onClick((function(m) { return function () {
-                       if (!widgets[m].ball1.animating()) {
-                           widgets[m].ball1.animate()
-                           if (m &gt;= 1) widgets[m].ball2.animate()
-                           if (m &gt;= 2) widgets[m].ball3.animate()
-                       } else {
-                           // widgets[n].ball1.kick()
-                       }
-                   }})(n))
-                   .render();
+                    if (m == 0) return 100;
+                    return widgets[m-1].board.left() + widgets[m-1].board.width() + 20
+                }})(n))
+                .width(500)
+                .height(500)
+                .fill((function(m) { return function () {
+                    switch (m) {
+                        case 0:
+                            return "#F1D848";
+                        case 1:
+                            return "#FCACD1"
+                        case 2:
+                            return "#77CDF2"
+                    }
+                }})(n))
+            // save component to cache, using "cache context/component name" (i.e. widget_1/board) as path
+                .provide('board')
+                .onClick((function(m) { return function () {
+                    if (!widgets[m].ball1.animating()) {
+                        widgets[m].ball1.animate()
+                        if (m &gt;= 1) widgets[m].ball2.animate()
+                        if (m &gt;= 2) widgets[m].ball3.animate()
+                    } else {
+                        // widgets[n].ball1.kick()
+                    }
+                }})(n))
+                .render();
 
-           widgets[n].ball1 = app.ball(cache, model)
-                   // cache context says sharing of data/behavior via cache is limited to widget
-                   .cache('widget' + n)
-                   // model scope says mutable data may be shared across widgets
-                   // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                   .model('myCooperationScope')
-                   // Feature: consume a dependency (previously cached component) from the contextual component cache
-                   // (accessed as cash context/component name) into a specific method
-                   // Feature: due to 1:1 mapping limit, there is no hard wiring of the dependency's reference
-                   // inside the method (attachment is to the data/behavior not the resource name)
-                   // While a given resource, e.g. board, may be consumed by many methods in a given component or
-                   // across components, each method may consume only one resource.
-                   .consume([{name: 'board', into: 'animate'}])
-                   // settings
-                   .elem(app.getElementByUUID(widgets[n].ball1_id))
-                   .radius(10)
-                   .dx(2)
-                   .dy(4)
-                   .speed(1.5)
-                   //
-                   // Feature: we may pass a reference to a value-producing closure (a function that
-                   // returns a function that, when executed during the reading of the property, returns
-                   // a value) as an argument to the property instead of the self-executing closure
-                   // used in this example. That way the inner function will generate the value dynamically
-                   // every time the property is read, resulting in a dynamic property. To do that here,
-                   // you may return a closure from the self-executing closure (double closure?)
-                   //
-                   // Feature: "this" in a returned functions reference defaults to the component instance
-                   //
-                   .x((function(m) { return function() {
-                       return widgets[m].board.left() + (widgets[m].board.width() / 2)
-                   }})(n))
-                   .y((function(m) { return function() {
-                       return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                   }})(n))
-                   .fill("red")
-                   .render();
+        widgets[n].ball1 = app.ball(cache, model)
+            // cache context says sharing of data/behavior via cache is limited to widget
+                .cache('widget' + n)
+            // model scope says mutable data may be shared across widgets
+            // set this to ('scope' + n) to limit to widget if there is any chance of collision
+                .model('myCooperationScope')
+            // Feature: consume a dependency (previously cached component) from the contextual component cache
+            // (accessed as cash context/component name) into a specific method
+            // Feature: due to 1:1 mapping limit, there is no hard wiring of the dependency's reference
+            // inside the method (attachment is to the data/behavior not the resource name)
+            // While a given resource, e.g. board, may be consumed by many methods in a given component or
+            // across components, each method may consume only one resource.
+                .consume([{name: 'board', into: 'animate'}])
+            // settings
+                .elem(app.getElementByUUID(widgets[n].ball1_id))
+                .radius(10)
+                .dx(2)
+                .dy(4)
+                .speed(1.5)
+            //
+            // Feature: we may pass a reference to a value-producing closure (a function that
+            // returns a function that, when executed during the reading of the property, returns
+            // a value) as an argument to the property instead of the self-executing closure
+            // used in this example. That way the inner function will generate the value dynamically
+            // every time the property is read, resulting in a dynamic property. To do that here,
+            // you may return a closure from the self-executing closure (double closure?)
+            //
+            // Feature: "this" in a returned functions reference defaults to the component instance
+            //
+                .x((function(m) { return function() {
+                    return widgets[m].board.left() + (widgets[m].board.width() / 2)
+                }})(n))
+                .y((function(m) { return function() {
+                    return widgets[m].board.top() + (widgets[m].board.height() / 2)
+                }})(n))
+                .fill("red")
+                .render();
 
-           if (n &gt;= 1) {
-               widgets[n].ball2 = app.ball(cache, model)
-                       // cache context says sharing of data/behavior via cache is limited to widget
-                       .cache('widget' + n)
-                       // model scope says mutable data may be shared across widgets
-                       // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                       .model('myCooperationScope')
-                       // consume a dependency from cache into a specific method (1:1)
-                       // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
-                       .consume([{name: 'board', into: 'animate'}])
-                       // settings
-                       .elem(app.getElementByUUID(widgets[n].ball2_id))
-                       .radius(widgets[n].ball1.radius() * 2)
-                       .dx(6)
-                       .dy(12)
-                       .speed(1.5)
-                       .x((function(m) { return function() {
-                           return widgets[m].board.left() + (widgets[m].board.width() / 3)
-                       }})(n))
-                       .y((function(m) { return function() {
-                           return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                       }})(n))
-                       .fill("blue")
-                       .render();
+        if (n &gt;= 1) {
+            widgets[n].ball2 = app.ball(cache, model)
+                // cache context says sharing of data/behavior via cache is limited to widget
+                    .cache('widget' + n)
+                // model scope says mutable data may be shared across widgets
+                // set this to ('scope' + n) to limit to widget if there is any chance of collision
+                    .model('myCooperationScope')
+                // consume a dependency from cache into a specific method (1:1)
+                // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
+                    .consume([{name: 'board', into: 'animate'}])
+                // settings
+                    .elem(app.getElementByUUID(widgets[n].ball2_id))
+                    .radius(widgets[n].ball1.radius() * 2)
+                    .dx(6)
+                    .dy(12)
+                    .speed(1.5)
+                    .x((function(m) { return function() {
+                        return widgets[m].board.left() + (widgets[m].board.width() / 3)
+                    }})(n))
+                    .y((function(m) { return function() {
+                        return widgets[m].board.top() + (widgets[m].board.height() / 2)
+                    }})(n))
+                    .fill("blue")
+                    .render();
 
-           }
+        }
 
-           if (n &gt;= 2) {
+        if (n &gt;= 2) {
 
-               widgets[n].ball3 = app.ball(cache, model)
-                       // cache context says sharing of data/behavior via cache is limited to widget
-                       .cache('widget' + n)
-                       // model scope says mutable data may be shared across widgets
-                       // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                       .model('myCooperationScope')
-                       // consume a dependency from cache into a specific method (1:1)
-                       // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
-                       .consume([{name: 'board', into: 'animate'}])
-                       // settings
-                       .elem(app.getElementByUUID(widgets[n].ball3_id))
-                       .radius(widgets[n].ball1.radius() * 2.5)
-                       .dx(8)
-                       .dy(14)
-                       .speed(1.5)
-                       .x((function(m) { return function() {
-                           return widgets[m].board.left() + (widgets[m].board.width() / 4.5)
-                       }})(n))
-                       .y((function(m) { return function() {
-                           return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                       }})(n))
-                       .fill("green")
-                       .render()
-           }
-       }
+            widgets[n].ball3 = app.ball(cache, model)
+                // cache context says sharing of data/behavior via cache is limited to widget
+                    .cache('widget' + n)
+                // model scope says mutable data may be shared across widgets
+                // set this to ('scope' + n) to limit to widget if there is any chance of collision
+                    .model('myCooperationScope')
+                // consume a dependency from cache into a specific method (1:1)
+                // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
+                    .consume([{name: 'board', into: 'animate'}])
+                // settings
+                    .elem(app.getElementByUUID(widgets[n].ball3_id))
+                    .radius(widgets[n].ball1.radius() * 2.5)
+                    .dx(8)
+                    .dy(14)
+                    .speed(1.5)
+                    .x((function(m) { return function() {
+                        return widgets[m].board.left() + (widgets[m].board.width() / 4.5)
+                    }})(n))
+                    .y((function(m) { return function() {
+                        return widgets[m].board.top() + (widgets[m].board.height() / 2)
+                    }})(n))
+                    .fill("green")
+                    .render()
+        }
+    }
 
-   } ())
-   &lt;/script&gt;
+} ())
+&lt;/script&gt;
 </pre>
 </html>
 
