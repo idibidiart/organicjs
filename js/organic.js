@@ -58,12 +58,12 @@
 
     // Contextual Component Cache
     //
-    // For caching and sharing component's data and behavior with components that have the same user-defined context
+    // For sharing component's cached data and behavior with components that have the same user-defined cache context
     //
     // Contextual Component Cache clones the component and saves the clone (with its data and behaviors operating in
-    // the cloned context) under the 'cash context/component name' path where context is the component .cache()
-    // property while name is specified in the .provide() property of the component being provided, and available 
-    // to the consuming component via that component's .consume() property.
+    // the cloned object context) under the 'cash context/component name' path where cache context is the component
+    // .cache() property and component name is the .provide() property of the component being cached, which is
+    // available to the consuming component via that component's .consume() property.
     //
     // use .provide(name) to cache component
     // use .consume([{name: 'component name', into: 'method or property'}, { ... }, etc]) to consume cached component
@@ -81,9 +81,28 @@
 
             obj[context$name] = {};
 
-            for (key in comp) {
-                obj[context$name][key] = comp[key]
+            for (var key in comp) {
+                if (comp.hasOwnProperty(key)) {
+
+                    //clone object
+                    obj[context$name][key] = comp[key]
+
+                    // change cache and model strings to cached$ + string
+                    // to isolated the cache context and model scope of cached components
+                    if (key == "props") {
+                        for (var prop in comp[key]) {
+                            if (prop == "cache") {
+                                obj[context$name][key][prop] = "cached$" + comp[key][prop]
+                            }
+                            if (prop == "model") {
+                                obj[context$name][key][prop] = "cached$" + comp[key][prop]
+                            }
+                        }
+                    }
+                }
             }
+
+            console.log(obj[context$name])
         }
 
         // return component if it exists in cache in the given context/name
@@ -126,7 +145,7 @@
             obj[scope].props = obj[scope].props || {}
 
             for (var key in json) {
-                obj[scope].props[key] = json[key]
+                if (json.hasOwnProperty(key)) obj[scope].props[key] = json[key]
             }
 
             for (var o in obj[scope].props) {
