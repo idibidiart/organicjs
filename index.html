@@ -85,7 +85,7 @@ Don't use id's on elements. They are bad because:
    2. elements which reuse an id, e.g. clones, go missing (with no warning)
 
 To substitute for DOM element id's, OrganicJS provides universally unique IDs (as attributes) for every element
-created via app.new() and a corresponding app.getElementById() method
+created from a fragment (via app.new()) and a corresponding app.getElementById() method
 -->
 
 </body>
@@ -382,7 +382,7 @@ Below is the code for creating this app (the components themselves are defined i
 &lt;svg xmlns="http://www.w3.org/2000/svg"
      preserveAspectRatio="xMinYMin meet"
      viewbox="0 0 960 960"
-     height="60%"&gt;
+     height="55%"&gt;
     &lt;!--- SVG fragment --&gt;
 
     &lt;text x="20" y="100" font-size = "72"&gt;Click on each box and use corresponding slider&lt;/text&gt;
@@ -399,6 +399,16 @@ Below is the code for creating this app (the components themselves are defined i
 
 &lt;/svg&gt;
 
+&lt;!-- NOTE:
+
+Don't use id's on elements. They are bad because:
+
+   1. they pollute the global window namespace
+   2. elements which reuse an id, e.g. clones, go missing (with no warning)
+
+To substitute for DOM element id's, OrganicJS provides universally unique IDs (as attributes) for every element
+created from a fragment (via app.new()) and a corresponding app.getElementById() method
+--&gt;
 
 &lt;/body&gt;
 
@@ -408,6 +418,7 @@ Below is the code for creating this app (the components themselves are defined i
 &lt;script src="js/jquery.min.js"&gt;&lt;/script&gt;
 &lt;!-- Bouncing ball app --&gt;
 &lt;script src="js/bouncy.js"&gt;&lt;/script&gt;
+&lt;script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sunburst"&gt;
 &lt;/script&gt;
 
 &lt;script&gt;
@@ -449,6 +460,11 @@ Below is the code for creating this app (the components themselves are defined i
         // app.getElementById(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
         // the trick is at every level of the tree, simply select on the parent node for that level
         sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
+
+        // you may use the cloned slider with jQuery or any other library (or the browser's querySelector) as
+        // you would any other element, e.g.:
+        // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
+        // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
 
         // restore original source of widget fragment to reuse in next iteration
         app.restore($('[frag="sliderWidget"]'))
@@ -506,7 +522,7 @@ Below is the code for creating this app (the components themselves are defined i
         // clone widget in place
         widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
 
-        // clone board inside cloned widget
+        // clone board fragment inside cloned widget fragment
         // this jQuery notation is equivalent to:
         // app.getElementById(widgets[n].widget_id).querySelector('frag="board"]')
         // the trick is at every level of the tree, simply select on the parent node for that level
@@ -515,15 +531,19 @@ Below is the code for creating this app (the components themselves are defined i
         // todo: make number of balls adjustable by defining a widgets[n].widget component with
         // todo: .balls(n) property and using that to create n balls (will do in next push)
 
-        // clone ball 1 in place
+        // clone ball (1) inside the cloned widget
         // this jQuery notation is equivalent to:
         // app.getElementById(widgets[n].widget_id).querySelector('frag="ball"]')
         // the trick is at every level of the tree, simply select on the parent node for that level
         widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
-        // clone balls 2 & 3 in place
+        // clone ball (2 & 3) inside the cloned widget
         if (n &gt;= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
         if (n &gt;= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
 
+        // you may use the cloned ball with jQuery or any other library (or the browser's querySelector) as
+        // you would any other element, e.g.:
+        // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
+        // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
 
         // restore original source of widget fragment to reuse in next iteration
         app.restore($('[frag="demoWidget"]'))
