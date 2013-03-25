@@ -77,6 +77,16 @@
 
 </svg>
 
+<!-- NOTE:
+
+Don't use id's on elements. They are bad because:
+
+   1. they pollute the global window namespace
+   2. elements which reuse an id, e.g. clones, go missing (with no warning)
+
+To substitute for DOM element id's, OrganicJS provides universally unique IDs (as attributes) for every element
+created via app.new() and a corresponding app.getElementById() method
+-->
 
 </body>
 
@@ -125,9 +135,9 @@
 
             // clone slider inside the cloned slider widget
             // this jQuery notation is equivalent to:
-            // app.getElementByUUID(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
+            // app.getElementById(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
             // the trick is at every level of the tree, simply select on the parent node for that level
-            sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementByUUID(sliderWidgets[n].sliderWidget_id)))
+            sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
 
             // restore original source of widget fragment to reuse in next iteration
             app.restore($('[frag="sliderWidget"]'))
@@ -139,7 +149,7 @@
                     // set this to ('scope' + n) to limit to widget if there is any chance of collision
                     .model('myCooperationScope')
                     //settings
-                    .elem(app.getElementByUUID(sliderWidgets[n].slider_id))
+                    .elem(app.getElementById(sliderWidgets[n].slider_id))
                     .left(100)
                     .top(20)
                     .display("block")
@@ -187,21 +197,21 @@
 
             // clone board inside cloned widget
             // this jQuery notation is equivalent to:
-            // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="board"]')
+            // app.getElementById(widgets[n].widget_id).querySelector('frag="board"]')
             // the trick is at every level of the tree, simply select on the parent node for that level
-            widgets[n].board_id = app.new($('[frag="board"]', app.getElementByUUID(widgets[n].widget_id)))
+            widgets[n].board_id = app.new($('[frag="board"]', app.getElementById(widgets[n].widget_id)))
 
             // todo: make number of balls adjustable by defining a widgets[n].widget component with
             // todo: .balls(n) property and using that to create n balls (will do in next push)
 
             // clone ball 1 in place
             // this jQuery notation is equivalent to:
-            // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="ball"]')
+            // app.getElementById(widgets[n].widget_id).querySelector('frag="ball"]')
             // the trick is at every level of the tree, simply select on the parent node for that level
-            widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
+            widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
             // clone balls 2 & 3 in place
-            if (n >= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
-            if (n >= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
+            if (n >= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            if (n >= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
 
 
             // restore original source of widget fragment to reuse in next iteration
@@ -214,7 +224,7 @@
                     // set this to ('scope' + n) to limit to widget if there is any chance of collision
                     .model('myCooperationScope')
                     //settings
-                    .elem($(app.getElementByUUID(widgets[n].board_id)))
+                    .elem($(app.getElementById(widgets[n].board_id)))
                     .top(100)
                     // we may pass a self-executing closure instead of a simple function reference
                     // sp that we may close on inner-scope in the returned function
@@ -262,7 +272,7 @@
                     // across components, each method may consume only one resource.
                     .consume([{name: 'board', into: 'animate'}])
                     // settings
-                    .elem(app.getElementByUUID(widgets[n].ball1_id))
+                    .elem(app.getElementById(widgets[n].ball1_id))
                     .radius(10)
                     .dx(2)
                     .dy(4)
@@ -297,7 +307,7 @@
                     // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
                     .consume([{name: 'board', into: 'animate'}])
                     // settings
-                    .elem(app.getElementByUUID(widgets[n].ball2_id))
+                    .elem(app.getElementById(widgets[n].ball2_id))
                     .radius(widgets[n].ball1.radius() * 2)
                     .dx(6)
                     .dy(12)
@@ -325,7 +335,7 @@
                     // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
                     .consume([{name: 'board', into: 'animate'}])
                     // settings
-                    .elem(app.getElementByUUID(widgets[n].ball3_id))
+                    .elem(app.getElementById(widgets[n].ball3_id))
                     .radius(widgets[n].ball1.radius() * 2.5)
                     .dx(8)
                     .dy(14)
@@ -427,9 +437,9 @@ Below is the code for creating this app (the components themselves are defined i
 
         // clone slider inside the cloned slider widget
         // this jQuery notation is equivalent to:
-        // app.getElementByUUID(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
+        // app.getElementById(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
         // the trick is at every level of the tree, simply select on the parent node for that level
-        sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementByUUID(sliderWidgets[n].sliderWidget_id)))
+        sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
 
         // restore original source of widget fragment to reuse in next iteration
         app.restore($('[frag="sliderWidget"]'))
@@ -441,7 +451,7 @@ Below is the code for creating this app (the components themselves are defined i
             // set this to ('scope' + n) to limit to widget if there is any chance of collision
                 .model('myCooperationScope')
             //settings
-                .elem(app.getElementByUUID(sliderWidgets[n].slider_id))
+                .elem(app.getElementById(sliderWidgets[n].slider_id))
                 .left(100)
                 .top(20)
                 .display("block")
@@ -489,21 +499,21 @@ Below is the code for creating this app (the components themselves are defined i
 
         // clone board inside cloned widget
         // this jQuery notation is equivalent to:
-        // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="board"]')
+        // app.getElementById(widgets[n].widget_id).querySelector('frag="board"]')
         // the trick is at every level of the tree, simply select on the parent node for that level
-        widgets[n].board_id = app.new($('[frag="board"]', app.getElementByUUID(widgets[n].widget_id)))
+        widgets[n].board_id = app.new($('[frag="board"]', app.getElementById(widgets[n].widget_id)))
 
         // todo: make number of balls adjustable by defining a widgets[n].widget component with
         // todo: .balls(n) property and using that to create n balls (will do in next push)
 
         // clone ball 1 in place
         // this jQuery notation is equivalent to:
-        // app.getElementByUUID(widgets[n].widget_id).querySelector('frag="ball"]')
+        // app.getElementById(widgets[n].widget_id).querySelector('frag="ball"]')
         // the trick is at every level of the tree, simply select on the parent node for that level
-        widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
+        widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
         // clone balls 2 & 3 in place
-        if (n &gt;= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
-        if (n &gt;= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementByUUID(widgets[n].widget_id)))
+        if (n &gt;= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+        if (n &gt;= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
 
 
         // restore original source of widget fragment to reuse in next iteration
@@ -516,7 +526,7 @@ Below is the code for creating this app (the components themselves are defined i
             // set this to ('scope' + n) to limit to widget if there is any chance of collision
                 .model('myCooperationScope')
             //settings
-                .elem($(app.getElementByUUID(widgets[n].board_id)))
+                .elem($(app.getElementById(widgets[n].board_id)))
                 .top(100)
             // we may pass a self-executing closure instead of a simple function reference
             // sp that we may close on inner-scope in the returned function
@@ -564,7 +574,7 @@ Below is the code for creating this app (the components themselves are defined i
             // across components, each method may consume only one resource.
                 .consume([{name: 'board', into: 'animate'}])
             // settings
-                .elem(app.getElementByUUID(widgets[n].ball1_id))
+                .elem(app.getElementById(widgets[n].ball1_id))
                 .radius(10)
                 .dx(2)
                 .dy(4)
@@ -599,7 +609,7 @@ Below is the code for creating this app (the components themselves are defined i
                 // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
                     .consume([{name: 'board', into: 'animate'}])
                 // settings
-                    .elem(app.getElementByUUID(widgets[n].ball2_id))
+                    .elem(app.getElementById(widgets[n].ball2_id))
                     .radius(widgets[n].ball1.radius() * 2)
                     .dx(6)
                     .dy(12)
@@ -627,7 +637,7 @@ Below is the code for creating this app (the components themselves are defined i
                 // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
                     .consume([{name: 'board', into: 'animate'}])
                 // settings
-                    .elem(app.getElementByUUID(widgets[n].ball3_id))
+                    .elem(app.getElementById(widgets[n].ball3_id))
                     .radius(widgets[n].ball1.radius() * 2.5)
                     .dx(8)
                     .dy(14)

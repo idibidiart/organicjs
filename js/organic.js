@@ -169,11 +169,14 @@
 
         // make sure the node exists
         if (!el.nodeType)
-            throw new Error("argument is not a node").stack
+            throw new Error("argument is not a DOM node").stack
 
         // make sure it's an element
         if (el.nodeType != 1)
-            throw new Error("Can't use this node type").stack
+            throw new Error("Can't use this DOM node type").stack
+
+        if (typeof el.getAttribute('frag') == 'undefined' || el.getAttribute('frag') == null)
+            throw new Error("This DOM node is not a fragment").stack
 
         var node = el.cloneNode(true)
 
@@ -225,7 +228,7 @@
 
     }
 
-    app.getElementByUUID = app.getElementByUUID || function GetElementByUUID(uuid) {
+    app.getElementById = app.getElementById || function GetElementByUUID(uuid) {
 
         return document.querySelector('[uuid="' + uuid + '"]')
     }
