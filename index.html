@@ -133,7 +133,6 @@ created via app.new() and a corresponding app.getElementById() method
             // clone slider widget in place
             sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
-
             // clone slider inside the cloned slider widget
             // this jQuery notation is equivalent to:
             // app.getElementById(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
@@ -219,7 +218,7 @@ created via app.new() and a corresponding app.getElementById() method
             if (n >= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
             if (n >= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
 
-            // you may use the cloned slider with jQuery or any other library (or the browser's querySelector) as
+            // you may use the cloned ball with jQuery or any other library (or the browser's querySelector) as
             // you would any other element, e.g.:
             // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
             // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
