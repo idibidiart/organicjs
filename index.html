@@ -88,8 +88,6 @@ To substitute for DOM element id's, OrganicJS provides universally unique IDs (a
 created from a fragment (via app.new()) and a corresponding app.getElementById() method
 -->
 
-</body>
-
 <!-- OrganicJS -->
 <script src="js/organic.js"></script>
 <!-- jQuery 1.8.3 -->
@@ -355,14 +353,49 @@ Below is the code for creating this app (the components themselves are defined i
 </p>
 <pre class="prettyprint">
 
-&lt;!-- OrganicJS --&gt;
-&lt;script src="js/organic.js"&gt;&lt;/script&gt;
-&lt;!-- jQuery 1.8.3 --&gt;
-&lt;script src="js/jquery.min.js"&gt;&lt;/script&gt;
-&lt;!-- Bouncing ball app --&gt;
-&lt;script src="js/bouncy.js"&gt;&lt;/script&gt;
-&lt;script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sunburst"&gt;
-&lt;/script&gt;
+&lt;!-- Define widgets with nestable, reusable HTML5/SVG fragments for in-place cloning and rendering --&gt;
+
+&lt;!-- HTML widgets container--&gt;
+&lt;div&gt;
+    &lt;!-- HTML fragment --&gt;
+    &lt;div frag="sliderWidget"&gt;
+        &lt;!-- nested HTML fragment --&gt;
+        &lt;input type="range" frag="slider"/&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!--- SVG widgets container --&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg"
+     preserveAspectRatio="xMinYMin meet"
+     viewbox="0 0 960 960"
+     height="55%"&gt;
+    &lt;!--- SVG fragment --&gt;
+
+    &lt;text x="20" y="100" font-size = "72"&gt;Click on each box and use corresponding slider&lt;/text&gt;
+    &lt;g frag="demoWidget" transform="translate(0, 100)"&gt;
+        &lt;!--- nested SVG fragment --&gt;
+        &lt;rect frag="board" /&gt;
+        &lt;!--- nested SVG fragment --&gt;
+        &lt;circle frag="ball" /&gt;
+    &lt;/g&gt;
+    &lt;g&gt;
+        &lt;text x="20" y="840" font-size = "48"&gt;Each widget is derived from the same HTML/SVG/JS building blocks
+            yet each has different properties and behavior...&lt;/text&gt;
+    &lt;/g&gt;
+
+&lt;/svg&gt;
+
+&lt;!-- NOTE:
+
+Don't use id's on elements. They are bad because:
+
+   1. they pollute the global window namespace
+   2. elements which reuse an id, e.g. clones, go missing (with no warning)
+
+To substitute for DOM element id's, OrganicJS provides universally unique IDs (as attributes) for every element
+created from a fragment (via app.new()) and a corresponding app.getElementById() method
+--&gt;
+
 
 &lt;script&gt;
 
