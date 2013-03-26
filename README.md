@@ -23,14 +23,16 @@ Reusable JS component framework with support for:
 1. Chainable methods and properties (easy to unit test via automated means since all properties and methods are directly
 testable in any order, with any arguments)
 
-2. Functions are allowed as property arguments and function's context is bound to component instance to allow for
-inter-dependent properties (properties that reference each other, e.g. someComponent.height(this.width() + 500)
+2. Functions, not just values, are allowed as property arguments and function's context is bound to component instance
+to allow for inter-dependent properties (properties that reference each other, e.g. someComponent.height(function()
+{return this.width() + 500})
 
-3. Closures, both by reference as well as self executing closures, are allowed as property arguments, allowing,
+3. Closures, both by reference as well as self-executing closures, are also allowed as property arguments, allowing,
  in the former case, dynamic properties (where the returned property value is never static in such case)
 
-4. Functions are allowed as method arguments and their context may be bound to the element (for components with HTML
-or SVG elements) to handle DOM events, e.g. someComponent.on("click", handler) or someComponent.onClick(handler)
+4. Functions, not just values, are allowed as method arguments and their context may be bound to the element (for
+components with HTML or SVG elements) to handle DOM events, e.g. someComponent.on("click", handler) or
+someComponent.onClick(handler)
 
 5. "Provide/Consume" pattern allows for sharing of data and behavior between components, in a soft, decoupled manner,
 via Contextual Component Caching.

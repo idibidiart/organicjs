@@ -199,9 +199,9 @@
     }
 
 
-    // save HTML/SVG of fragment prior to cloning
+    // save HTML/SVG of parent element prior to cloning children
     // only needs to be called once per top-most fragment
-    app.save = app.save || function Save(frag) {
+    app.saveParent = app.save || function Save(frag) {
 
         // jQuery to native
         var el = frag[0] || frag;
@@ -210,8 +210,8 @@
 
     }
 
-    // restore HTML/SVG of previously saved fragment
-    app.restore = app.restore || function Restore(frag) {
+    // restore HTML/SVG of previously saved parent element
+    app.restoreParent = app.restore || function Restore(frag) {
 
         // jQuery to native
         var el = frag[0] || frag;

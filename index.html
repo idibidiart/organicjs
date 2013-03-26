@@ -123,9 +123,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
         // All widgets in this example are derived from the above-defined HTML/SVG fragments
         // We may iteratively create the required widget instances and configure their properties/methods
 
-        // save original source of widget fragment
-        app.save($('[frag="sliderWidget"]'))
-
         for (var n = 0; n < numWidgets; n++) {
 
             sliderWidgets[n] = {};
@@ -143,9 +140,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // you would any other element, e.g.:
             // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
             // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
-
-            // restore original source of widget fragment to reuse in next iteration
-            app.restore($('[frag="sliderWidget"]'))
 
             sliderWidgets[n].slider = app.slider(cache, model)
                     // cache context says sharing of data/behavior via cache is limited to widget
@@ -190,9 +184,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                     .render();
         }
 
-        // save original source of widget fragment
-        app.save($('[frag="demoWidget"]'))
-
         for (var n = 0; n < numWidgets; n++) {
 
             widgets[n] = {}
@@ -222,9 +213,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // you would any other element, e.g.:
             // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
             // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
-
-            // restore original source of widget fragment to reuse in next iteration
-            app.restore($('[frag="demoWidget"]'))
 
             widgets[n].board = app.board(cache, model)
                     // cache context says sharing of data/behavior via cache is limited to widget
@@ -367,51 +355,6 @@ Below is the code for creating this app (the components themselves are defined i
 </p>
 <pre class="prettyprint">
 
-&lt;!-- Define widgets with nestable, reusable HTML5/SVG fragments for in-place cloning and rendering --&gt;
-
-&lt;!-- HTML widgets container--&gt;
-&lt;div&gt;
-    &lt;!-- HTML fragment --&gt;
-    &lt;div frag="sliderWidget"&gt;
-        &lt;!-- nested HTML fragment --&gt;
-        &lt;input type="range" frag="slider"/&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!--- SVG widgets container --&gt;
-&lt;svg xmlns="http://www.w3.org/2000/svg"
-     preserveAspectRatio="xMinYMin meet"
-     viewbox="0 0 960 960"
-     height="55%"&gt;
-    &lt;!--- SVG fragment --&gt;
-
-    &lt;text x="20" y="100" font-size = "72"&gt;Click on each box and use corresponding slider&lt;/text&gt;
-    &lt;g frag="demoWidget" transform="translate(0, 100)"&gt;
-        &lt;!--- nested SVG fragment --&gt;
-        &lt;rect frag="board" /&gt;
-        &lt;!--- nested SVG fragment --&gt;
-        &lt;circle frag="ball" /&gt;
-    &lt;/g&gt;
-    &lt;g&gt;
-        &lt;text x="20" y="840" font-size = "48"&gt;Each widget is derived from the same HTML/SVG/JS building blocks
-            yet each has different properties and behavior...&lt;/text&gt;
-    &lt;/g&gt;
-
-&lt;/svg&gt;
-
-&lt;!-- NOTE:
-
-Don't use id's on elements. They are bad because:
-
-   1. they pollute the global window namespace
-   2. elements which reuse an id, e.g. clones, go missing (with no warning)
-
-To substitute for DOM element id's, OrganicJS provides universally unique IDs (as attributes) for every element
-created from a fragment (via app.new()) and a corresponding app.getElementById() method
---&gt;
-
-&lt;/body&gt;
-
 &lt;!-- OrganicJS --&gt;
 &lt;script src="js/organic.js"&gt;&lt;/script&gt;
 &lt;!-- jQuery 1.8.3 --&gt;
@@ -445,9 +388,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
     // All widgets in this example are derived from the above-defined HTML/SVG fragments
     // We may iteratively create the required widget instances and configure their properties/methods
 
-    // save original source of widget fragment
-    app.save($('[frag="sliderWidget"]'))
-
     for (var n = 0; n &lt; numWidgets; n++) {
 
         sliderWidgets[n] = {};
@@ -465,9 +405,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
         // you would any other element, e.g.:
         // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
         // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
-
-        // restore original source of widget fragment to reuse in next iteration
-        app.restore($('[frag="sliderWidget"]'))
 
         sliderWidgets[n].slider = app.slider(cache, model)
             // cache context says sharing of data/behavior via cache is limited to widget
@@ -512,9 +449,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                 .render();
     }
 
-    // save original source of widget fragment
-    app.save($('[frag="demoWidget"]'))
-
     for (var n = 0; n &lt; numWidgets; n++) {
 
         widgets[n] = {}
@@ -544,9 +478,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
         // you would any other element, e.g.:
         // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
         // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
-
-        // restore original source of widget fragment to reuse in next iteration
-        app.restore($('[frag="demoWidget"]'))
 
         widgets[n].board = app.board(cache, model)
             // cache context says sharing of data/behavior via cache is limited to widget
