@@ -88,7 +88,7 @@
                     obj[context$name][key] = comp[key]
 
                     // change cache and model strings to cached$ + string
-                    // to isolated the cache context and model scope of cached components
+                    // to isolate the cache context and model scope of cached components
                     if (key == "props") {
                         for (var prop in comp[key]) {
                             if (prop == "cache") {

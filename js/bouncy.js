@@ -141,7 +141,7 @@
            //
            // Contextual Caching provides a decoupled kind of dependency, allowing any component to serve as the
            // dependency as long as it offers the expected data and/or behavior. Component caching decouples the
-           // dependency from the actual source component, using 'cache scope/component name' as
+           // dependency from the actual source component, using 'cache context/component name' as
            // the path, where cache scope is the cached component's .cache() property defined by the user (for
            // a set of collaborating components within a widget) and name is the cached component's .provide() which 
            // is available to the consuming component via that component's .consume() map.
