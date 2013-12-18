@@ -58,16 +58,16 @@
 
     // Contextual Component Cache
     //
-    // For sharing component's cached data and behavior with components that have the same user-defined cache context
+    // For caching component's data and behavior into user-defined context
     //
-    // Contextual Component Cache clones the component and saves the clone (with its data and behaviors operating in
-    // the cloned object context) under the 'cash context/component name' path where cache context is the component
-    // .cache() property and component name is the .provide() property of the component being cached, which is
-    // available to the consuming component via that component's .consume() property.
+    // Contextual Component Cache clones the component and saves the clone (with its data and behaviors working in
+    // the cloned context) under the 'cash context/component name' path where cache context is defined by the
+    // .cache() setter of the component being cached and component name is defined by the .provide() setter of the
+    // component being cached, which is available to the consuming component via that component's .consume() property.
     //
     // use .provide(name) to cache component
     // use .consume([{name: 'component name', into: 'method or property'}, { ... }, etc]) to consume cached component
-    // use console.log(cache.contexts()) to view all cached objects and their properties/methods, in all cash contexts
+    // use console.log(cache.contexts()) to view all cached objects and their properties/methods, in all cache contexts
     //
     //
     app.cache = app.cache || function Cache() {
@@ -76,7 +76,7 @@
 
         obj.contexts = function() { return obj}
 
-        // cache the component in the given 'cash context/ component name' path
+        // cache the component in the given 'cache context/ component name' path
         obj.set = function(context$name, comp) {
 
             obj[context$name] = {};
@@ -115,10 +115,10 @@
 
     // Scoped Data Model
     //
-    // For sharing independent data structures between widgets that have the same scope
+    // For storing global data structures in user-defined scope
     //
     // Scoped Model offers the ability to create, access and update independent data structures within a given
-    // scope that may transcend the cash context.
+    // scope that may transcend the cache context.
     //
     // use model("scope").create({key1: value, key2: value, etc}) to create new properties
     // use model("scope").keyName() to get the value for a key in the given scope
