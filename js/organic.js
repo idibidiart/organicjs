@@ -117,9 +117,6 @@
     //
     // For storing global data structures in user-defined scope
     //
-    // Scoped Model offers the ability to create, access and update independent data structures within a given
-    // scope that may transcend the cache context.
-    //
     // use model("scope").create({key1: value, key2: value, etc}) to create new properties
     // use model("scope").keyName() to get the value for a key in the given scope
     // use model("scope").keyName(value) to set the value for a key in the given scope
