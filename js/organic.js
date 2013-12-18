@@ -91,10 +91,7 @@
                     // to isolate the cache context and model scope of cached components
                     if (key == "props") {
                         for (var prop in comp[key]) {
-                            if (prop == "cache") {
-                                obj[context$name][key][prop] = "cached$" + comp[key][prop]
-                            }
-                            if (prop == "model") {
+                            if (prop == "cache" || prop == "model") {
                                 obj[context$name][key][prop] = "cached$" + comp[key][prop]
                             }
                         }
