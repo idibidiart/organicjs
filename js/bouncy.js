@@ -139,16 +139,16 @@
            // In OrganicJS, components do not depend on other components directly but on anonymous data and behavior
            // from other components that are cached in an isolated context.
            //
-           // Contextual Caching provides a soft, decoupled kind of dependency, allowing any component to serve as the
-           // dependency as long as it offers the expected data and/or behavior. Component caching isolates the 
-           // dependency from the actual component in both time and space, using 'widget context/component name' as 
-           // the path, where context is the cached component's .widget() property defined by the user (for
-           // a set of collaborating components within a widget) and name is the cached component's .provide() which 
+           // Contextual Caching provides a decoupled kind of dependency, allowing any component to serve as the
+           // dependency as long as it offers the expected data and/or behavior. Component caching decouples the
+           // dependency from the actual source component, using 'cache scope/component name' as
+           // the path, where cache scope is the cached component's .cache() property defined by the user (for
+           // a set of collaborating components within a widget) and name is the cached component's .provide() which
            // is available to the consuming component via that component's .consume() map.
            //
            // Cached components behave exactly the same as regular components, except they're cloned from the
            // component at the time of caching so they have different state and a different JS native-object
-           // context (not to be confused with the component's user-specified context)
+           // context
            //
            // In case no consumable components are found (in this case the 'board' in the component's widget context 
            // was consumed in 'animate' method) then replace with the expected data/behaviors
