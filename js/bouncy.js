@@ -10,7 +10,7 @@
 
 (function() {
 
-    app.board = function Board(cache, model) {
+    app.board = function Board(model) {
 
         var obj = {};
 
@@ -24,7 +24,7 @@
         obj.props.fill = undefined;
         obj.props.elem = undefined;
 
-        app.build(obj, cache, model);
+        app.build(obj);
 
         obj.render = function () {
 
@@ -51,7 +51,7 @@
     }
 
 
-    app.slider = function Slider(cache, model) {
+    app.slider = function Slider(model) {
 
         var obj = {};
 
@@ -66,7 +66,7 @@
         obj.props.max = undefined
         obj.props.value = undefined
 
-        app.build(obj, cache, model);
+        app.build(obj);
 
         obj.onChange = function(func) {
 
@@ -91,7 +91,7 @@
         return obj;
     }
 
-    app.ball = function Ball(cache, model) {
+    app.ball = function Ball(model) {
 
        var rChange = 0;
 
@@ -110,7 +110,7 @@
        obj.props.animating = undefined;
        obj.props.elem = undefined;
 
-       app.build(obj, cache, model);
+       app.build(obj);
 
        obj.render = function() {
 
@@ -136,37 +136,18 @@
            elem.setAttributeNS(null, "cx", obj.x())
            elem.setAttributeNS(null, "cy", obj.y())
 
-           // In OrganicJS, components do not depend on other components directly but on anonymous data and behavior
-           // from other components that are cached in an isolated context.
-           //
-           // Contextual Caching provides a decoupled kind of dependency, allowing any component to serve as the
-           // dependency as long as it offers the expected data and/or behavior. Component caching decouples the
-           // dependency from the actual source component, using 'cache context/component name' as
-           // the path, where cache scope is the cached component's .cache() property defined by the user (for
-           // a set of collaborating components within a widget) and name is the cached component's .provide() which 
-           // is available to the consuming component via that component's .consume() map.
-           //
-           // Cached components behave exactly the same as regular components, except they're cloned from the
-           // component at the time of caching so they have different state and a different JS native-object
-           // context
-           //
-           // In case no consumable components are found (in this case the 'board' in the component's widget context 
-           // was consumed in 'animate' method) then replace with the expected data/behaviors
-
-           var consumed;
+           var consumed = null;
 
            // find out what name was imported ('animate' being this method's name)
-           for (var n = 0; n < obj.consume().length; n++) {
+           for (var n = 0; n < obj.link().length; n++) {
 
-               if (obj.consume()[n].into = "animate") {
-                   consumed = obj.consume()[n].name;
+               if (obj.link()[n].into == "animate") {
+                   consumed = obj.link()[n].comp;
                    break;
                }
            }
 
-           // try to find a component in cache that has that name
-           var cachedObject = cache.get(obj.cache() + "/" + consumed) ?
-                        cache.get(obj.cache() + "/" + consumed) :
+           var dependencyObject = consumed ? consumed :
            // else replace with the expected data/behaviors
                         {
                             left: function() {return 0},
@@ -178,16 +159,16 @@
            // to bounce it, mirror the ball's path after it runs into an edge
 
            // left or right
-           if (obj.x() + obj.dx() > cachedObject.width() - obj.radius() - rChange + cachedObject.left() ||
+           if (obj.x() + obj.dx() > dependencyObject.width() - obj.radius() - rChange + dependencyObject.left() ||
 
-               obj.x() + obj.dx() < obj.radius() + rChange + cachedObject.left())
+               obj.x() + obj.dx() < obj.radius() + rChange + dependencyObject.left())
 
                     obj.dx(-obj.dx());
 
            // top or bottom
-           if (obj.y() + obj.dy() < obj.radius() + rChange + cachedObject.top() ||
+           if (obj.y() + obj.dy() < obj.radius() + rChange + dependencyObject.top() ||
 
-               obj.y() + obj.dy() > cachedObject.height() - obj.radius() - rChange + cachedObject.top())
+               obj.y() + obj.dy() > dependencyObject.height() - obj.radius() - rChange + dependencyObject.top())
 
            {
 

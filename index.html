@@ -15,10 +15,9 @@
 
         OrganicJS is a micro-framework for reusable JS+HTML+SVG components
 
-        OrganicJS supports reusable JS+HTML+SVG components with chainable properties and public methods, dynamic
-        setters/getters,reusable widget markup with nestable HTML/SVG fragments and in-place fragment cloning and
-        rendering, and sharing of data/behavior among components in a virtual manner using contextual
-        component caching.
+         OrganicJS supports reusable JS+HTML+SVG components with chainable properties and public methods, dynamic
+         setters/getters,reusable widget markup with nestable HTML/SVG fragments and in-place fragment cloning and
+         rendering, and sharing of mutable data among components iin user-defined collaboration scopes.
 
         The main file is organic.js. However, the component pattern is partly implemented in the app file (bouncy.js)
 
@@ -62,7 +61,6 @@
      viewbox="0 0 960 960"
      height="55%">
     <!--- SVG fragment -->
-
     <text x="20" y="100" font-size = "72">Click on each box and use corresponding slider</text>
     <g frag="demoWidget" transform="translate(0, 100)">
         <!--- nested SVG fragment -->
@@ -79,10 +77,10 @@
 
 <!-- NOTE:
 
-Don't use id's on elements. They are bad because:
+Don't use id's with DOM elements. They are bad because:
 
-   1. they pollute the global window namespace
-   2. elements which reuse an id, e.g. clones, go missing (with no warning)
+   1. they pollute the global window namespace (every id is automatically a var with window as its scope)
+   2. cloned elements that have an id go missing due to id collision (no warning)
 
 To substitute for DOM element id's, OrganicJS provides universally unique IDs (as attributes) for every element
 created from a fragment (via app.new()) and a corresponding app.getElementById() method
@@ -110,17 +108,13 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
     (function() {
 
         //see organic.js
-        var
-        cache = app.cache(),
-        model = app.model(),
-
-        widgets = [],
-        sliderWidgets = [],
-        numWidgets = 3;
+        var     model = app.model()
+            ,   widgets = []
+            ,   sliderWidgets = []
+            ,   numWidgets = 3;
 
         // All widgets in this example are derived from the above-defined HTML/SVG fragments
-        // We may iteratively create the required widget instances and configure their properties/methods
-
+        // We may iteratively create the required number of widget instances and configure their properties/methods
         for (var n = 0; n < numWidgets; n++) {
 
             sliderWidgets[n] = {};
@@ -128,23 +122,16 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // clone slider widget in place
             sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
-            // clone slider inside the cloned slider widget
-            // this jQuery notation is equivalent to:
-            // app.getElementById(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
-            // the trick is at every level of the tree, simply select on the parent node for that level
+            // create a clone of slider _inside_ the cloned slider widget (in-place cloning)
             sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
 
-            // you may use the cloned slider with jQuery or any other library (or the browser's querySelector) as
-            // you would any other element, e.g.:
+            // you may use the cloned slider with jQuery or any other library as you would normally, e.g.:
             // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
             // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
 
-            sliderWidgets[n].slider = app.slider(cache, model)
-                    // cache context says sharing of data/behavior via cache is limited to widget
-                    .cache('widget' + n)
+            sliderWidgets[n].slider = app.slider(model)
                     // model scope says mutable data may be shared across widgets
-                    // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                    .model('myCooperationScope')
+                    .scope('xyzCooperationScope')
                     //settings
                     .elem(app.getElementById(sliderWidgets[n].slider_id))
                     .left(100)
@@ -189,45 +176,31 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // clone widget in place
             widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
 
-            // clone board fragment inside cloned widget fragment
-            // this jQuery notation is equivalent to:
-            // app.getElementById(widgets[n].widget_id).querySelector('frag="board"]')
-            // the trick is at every level of the tree, simply select on the parent node for that level
+            // create clone of board fragment _inside_ the cloned widget fragment
             widgets[n].board_id = app.new($('[frag="board"]', app.getElementById(widgets[n].widget_id)))
 
-            // todo: make number of balls adjustable by defining a widgets[n].widget component with
-            // todo: .balls(n) property and using that to create n balls (will do in next push)
-
-            // clone ball (1) inside the cloned widget
-            // this jQuery notation is equivalent to:
-            // app.getElementById(widgets[n].widget_id).querySelector('frag="ball"]')
-            // the trick is at every level of the tree, simply select on the parent node for that level
+            // create clone of ball #1 _inside_ the cloned widget
             widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
-            // clone ball (2 & 3) inside the cloned widget
+            // create clone of balls #2 & #3 _inside_ the cloned widget
             if (n >= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
             if (n >= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
-
-            // you may use the cloned ball with jQuery or any other library (or the browser's querySelector) as
-            // you would any other element, e.g.:
+            // you may use the cloned ball with jQuery or any other library as you would normally, e.g.:
             // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
             // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
 
-            widgets[n].board = app.board(cache, model)
-                    // cache context says sharing of data/behavior via cache is limited to widget
-                    .cache('widget' + n)
-                    // model scope says mutable data may be shared across widgets
-                    // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                    .model('myCooperationScope')
+            widgets[n].board = app.board(model)
+                    // model scope allows mutable data may be shared safely across widgets
+                    .scope('xyzCooperationScope')
                     //settings
                     .elem($(app.getElementById(widgets[n].board_id)))
                     .top(100)
-                    // we may pass a self-executing closure instead of a simple function reference
-                    // sp that we may close on inner-scope in the returned function
-                    .left((function(m) { return function() {
-
+                    .left((function(m) {
+                            // we may return a function that evaluates the code below if we wish for .left() to be
+                            // set dynamically every time we call .left()
+                            // in that case, 'this' would be evaluated as the component instance
                             if (m == 0) return 100;
                             return widgets[m-1].board.left() + widgets[m-1].board.width() + 20
-                    }})(n))
+                    })(n))
                     .width(500)
                     .height(500)
                     .fill((function(m) { return function () {
@@ -240,8 +213,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                                 return "#77CDF2"
                         }
                     }})(n))
-                    // save component to cache, using "cache context/component name" (i.e. widget_1/board) as path
-                    .provide('board')
                     .onClick((function(m) { return function () {
                         if (!widgets[m].ball1.animating()) {
                             widgets[m].ball1.animate()
@@ -253,98 +224,52 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                     }})(n))
                     .render();
 
-            widgets[n].ball1 = app.ball(cache, model)
-                    // cache context says sharing of data/behavior via cache is limited to widget
-                    .cache('widget' + n)
-                    // model scope says mutable data may be shared across widgets
-                    // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                    .model('myCooperationScope')
-                    // Feature: consume a dependency (previously cached component) from the contextual component cache
-                    // (accessed as cache context/component name) into a specific method
-                    // Feature: due to 1:1 mapping limit, there is no hard wiring of the dependency's reference
-                    // inside the method (attachment is to the data/behavior not the resource name)
-                    // While a given resource, e.g. board, may be consumed by many methods in a given component or
-                    // across components, each method may consume only one resource.
-                    .consume([{name: 'board', into: 'animate'}])
+            widgets[n].ball1 = app.ball(model)
+                    .scope('xyzCooperationScope')
+                    .link([{comp: widgets[n].board, into: 'animate'}])
                     // settings
                     .elem(app.getElementById(widgets[n].ball1_id))
                     .radius(10)
                     .dx(2)
                     .dy(4)
                     .speed(1.5)
-                    //
-                    // Feature: we may pass a reference to a value-producing closure (a function that
-                    // returns a function that, when executed during the reading of the property, returns
-                    // a value) as an argument to the property instead of the self-executing closure
-                    // used in this example. That way the inner function will generate the value dynamically
-                    // every time the property is read, resulting in a dynamic property. To do that here,
-                    // you may return a closure from the self-executing closure (double closure?)
-                    //
-                    // Feature: "this" in a returned functions reference defaults to the component instance
-                    //
-                    .x((function(m) { return function() {
-                       return widgets[m].board.left() + (widgets[m].board.width() / 2)
-                    }})(n))
-                    .y((function(m) { return function() {
-                        return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                    }})(n))
+                    .x(widgets[n].board.left() + (widgets[n].board.width() / 2))
+                    .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
                     .fill("red")
                     .render();
 
             if (n >= 1) {
-                    widgets[n].ball2 = app.ball(cache, model)
-                    // cache context says sharing of data/behavior via cache is limited to widget
-                    .cache('widget' + n)
-                    // model scope says mutable data may be shared across widgets
-                    // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                    .model('myCooperationScope')
-                    // consume a dependency from cache into a specific method (1:1)
-                    // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
-                    .consume([{name: 'board', into: 'animate'}])
+                    widgets[n].ball2 = app.ball(model)
+                    .scope('xyzCooperationScope')
+                    .link([{comp: widgets[n].board, into: 'animate'}])
                     // settings
                     .elem(app.getElementById(widgets[n].ball2_id))
                     .radius(widgets[n].ball1.radius() * 2)
                     .dx(6)
                     .dy(12)
                     .speed(1.5)
-                    .x((function(m) { return function() {
-                        return widgets[m].board.left() + (widgets[m].board.width() / 3)
-                    }})(n))
-                    .y((function(m) { return function() {
-                        return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                    }})(n))
+                    .x(widgets[n].board.left() + (widgets[n].board.width() / 3))
+                    .y( widgets[n].board.top() + (widgets[n].board.height() / 2))
                     .fill("blue")
                     .render();
-
             }
 
             if (n >= 2) {
-
-                    widgets[n].ball3 = app.ball(cache, model)
-                    // cache context says sharing of data/behavior via cache is limited to widget
-                    .cache('widget' + n)
-                    // model scope says mutable data may be shared across widgets
-                    // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                    .model('myCooperationScope')
-                    // consume a dependency from cache into a specific method (1:1)
-                    // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
-                    .consume([{name: 'board', into: 'animate'}])
-                    // settings
-                    .elem(app.getElementById(widgets[n].ball3_id))
-                    .radius(widgets[n].ball1.radius() * 2.5)
-                    .dx(8)
-                    .dy(14)
-                    .speed(1.5)
-                    .x((function(m) { return function() {
-                        return widgets[m].board.left() + (widgets[m].board.width() / 4.5)
-                    }})(n))
-                    .y((function(m) { return function() {
-                        return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                    }})(n))
-                    .fill("green")
-                    .render()
-            }
-        }
+                    widgets[n].ball3 = app.ball(model)
+                    .scope('xyzCooperationScope')
+            .link([{comp: widgets[n].board, into: 'animate'}])
+        // settings
+            .elem(app.getElementById(widgets[n].ball3_id))
+            .radius(widgets[n].ball1.radius() * 2.5)
+            .dx(8)
+            .dy(14)
+            .speed(1.5)
+            .x(widgets[n].board.left() + (widgets[n].board.width() / 4.5))
+            .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
+            .fill("green")
+            .render()
+    }
+    }
 
     } ())
 </script>
@@ -399,254 +324,181 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
 
 &lt;script&gt;
 
-// Notes
-//
-// The in-line script shows how to build the app from components using the widget's markup
-// and how to access each component's public properties and methods
-//
-// Hooking up application level unit tests would make a nice extension
-// to this example
+    // Notes
+    //
+    // The in-line script shows how to build the app from components using the widget's markup
+    // and how to access each component's public properties and methods
+    //
+    // Hooking up application level unit tests would make a nice extension
+    // to this example
 
-(function() {
+    (function() {
 
-    //see organic.js
-    var
-            cache = app.cache(),
-            model = app.model(),
+        //see organic.js
+        var     model = app.model()
+            ,   widgets = []
+            ,   sliderWidgets = []
+            ,   numWidgets = 3;
 
-            widgets = [],
-            sliderWidgets = [],
-            numWidgets = 3;
+        // All widgets in this example are derived from the above-defined HTML/SVG fragments
+        // We may iteratively create the required number of widget instances and configure their properties/methods
+        for (var n = 0; n < numWidgets; n++) {
 
-    // All widgets in this example are derived from the above-defined HTML/SVG fragments
-    // We may iteratively create the required widget instances and configure their properties/methods
+            sliderWidgets[n] = {};
 
-    for (var n = 0; n &lt; numWidgets; n++) {
+            // clone slider widget in place
+            sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
-        sliderWidgets[n] = {};
+            // create a clone of slider _inside_ the cloned slider widget (in-place cloning)
+            sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
 
-        // clone slider widget in place
-        sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
+            // you may use the cloned slider with jQuery or any other library as you would normally, e.g.:
+            // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
+            // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
 
-        // clone slider inside the cloned slider widget
-        // this jQuery notation is equivalent to:
-        // app.getElementById(sliderWidgets[n].sliderWidget_id).querySelector('frag="slider"]')
-        // the trick is at every level of the tree, simply select on the parent node for that level
-        sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
+            sliderWidgets[n].slider = app.slider(model)
+                    // model scope says mutable data may be shared across widgets
+                    .scope('xyzCooperationScope')
+                    //settings
+                    .elem(app.getElementById(sliderWidgets[n].slider_id))
+                    .left(100)
+                    .top(20)
+                    .display("block")
+                    .min("10")
+                    .max("50")
+                    .value("10")
+                    // method that takes a function and $.binds it to the element's change event
+                    .onChange((function(m) { return function() {
 
-        // you may use the cloned slider with jQuery or any other library (or the browser's querySelector) as
-        // you would any other element, e.g.:
-        // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
-        // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
+                        var that = this;
 
-        sliderWidgets[n].slider = app.slider(cache, model)
-            // cache context says sharing of data/behavior via cache is limited to widget
-                .cache('widget' + n)
-            // model scope says mutable data may be shared across widgets
-            // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                .model('myCooperationScope')
-            //settings
-                .elem(app.getElementById(sliderWidgets[n].slider_id))
-                .left(100)
-                .top(20)
-                .display("block")
-                .min("10")
-                .max("50")
-                .value("10")
-            // method that takes a function and $.binds it to the element's change event
-                .onChange((function(m) { return function() {
-
-                    var that = this;
-
-                    if (m == 0) {
-                        widgets[m].ball1
+                        if (m == 0) {
+                            widgets[m].ball1
                                 .radius(function() {
-                                    return +that.value + (that.value &gt; 3 ? 0 : 3);
+                                    return +that.value + (that.value > 3 ? 0 : 3);
                                 })
                                 .render()
-                    }
-                    if (m == 1) {
-                        widgets[m].ball1
+                        }
+                        if (m == 1) {
+                            widgets[m].ball1
                                 .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
                                 .render()
-                        widgets[m].ball2
+                            widgets[m].ball2
                                 .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
                                 .render()
-                    }
-                    if (m == 2) {
-                        widgets[m].ball1.speed(this.value / 8)
-                        widgets[m].ball2.speed(this.value / 13)
-                        widgets[m].ball3.speed(this.value / 21)
-                    }
-                }})(n))
-                .render();
-    }
+                        }
+                        if (m == 2) {
+                            widgets[m].ball1.speed(this.value / 8)
+                            widgets[m].ball2.speed(this.value / 13)
+                            widgets[m].ball3.speed(this.value / 21)
+                        }
+                    }})(n))
+                    .render();
+        }
 
-    for (var n = 0; n &lt; numWidgets; n++) {
+        for (var n = 0; n < numWidgets; n++) {
 
-        widgets[n] = {}
+            widgets[n] = {}
 
-        // clone widget in place
-        widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
+            // clone widget in place
+            widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
 
-        // clone board fragment inside cloned widget fragment
-        // this jQuery notation is equivalent to:
-        // app.getElementById(widgets[n].widget_id).querySelector('frag="board"]')
-        // the trick is at every level of the tree, simply select on the parent node for that level
-        widgets[n].board_id = app.new($('[frag="board"]', app.getElementById(widgets[n].widget_id)))
+            // create clone of board fragment _inside_ the cloned widget fragment
+            widgets[n].board_id = app.new($('[frag="board"]', app.getElementById(widgets[n].widget_id)))
 
-        // todo: make number of balls adjustable by defining a widgets[n].widget component with
-        // todo: .balls(n) property and using that to create n balls (will do in next push)
+            // create clone of ball #1 _inside_ the cloned widget
+            widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            // create clone of balls #2 & #3 _inside_ the cloned widget
+            if (n >= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            if (n >= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            // you may use the cloned ball with jQuery or any other library as you would normally, e.g.:
+            // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
+            // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
 
-        // clone ball (1) inside the cloned widget
-        // this jQuery notation is equivalent to:
-        // app.getElementById(widgets[n].widget_id).querySelector('frag="ball"]')
-        // the trick is at every level of the tree, simply select on the parent node for that level
-        widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
-        // clone ball (2 & 3) inside the cloned widget
-        if (n &gt;= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
-        if (n &gt;= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            widgets[n].board = app.board(model)
+                    // model scope allows mutable data may be shared safely across widgets
+                    .scope('xyzCooperationScope')
+                    //settings
+                    .elem($(app.getElementById(widgets[n].board_id)))
+                    .top(100)
+                    .left((function(m) {
+                            // we may return a function that evaluates the code below if we wish for .left() to be
+                            // set dynamically every time we call .left()
+                            // in that case, 'this' would be evaluated as the component instance
+                            if (m == 0) return 100;
+                            return widgets[m-1].board.left() + widgets[m-1].board.width() + 20
+                    })(n))
+                    .width(500)
+                    .height(500)
+                    .fill((function(m) { return function () {
+                        switch (m) {
+                            case 0:
+                                return "#F1D848";
+                            case 1:
+                                return "#FCACD1"
+                            case 2:
+                                return "#77CDF2"
+                        }
+                    }})(n))
+                    .onClick((function(m) { return function () {
+                        if (!widgets[m].ball1.animating()) {
+                            widgets[m].ball1.animate()
+                            if (m >= 1) widgets[m].ball2.animate()
+                            if (m >= 2) widgets[m].ball3.animate()
+                        } else {
+                            // widgets[n].ball1.kick()
+                        }
+                    }})(n))
+                    .render();
 
-        // you may use the cloned ball with jQuery or any other library (or the browser's querySelector) as
-        // you would any other element, e.g.:
-        // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
-        // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
+            widgets[n].ball1 = app.ball(model)
+                    .scope('xyzCooperationScope')
+                    .link([{comp: widgets[n].board, into: 'animate'}])
+                    // settings
+                    .elem(app.getElementById(widgets[n].ball1_id))
+                    .radius(10)
+                    .dx(2)
+                    .dy(4)
+                    .speed(1.5)
+                    .x(widgets[n].board.left() + (widgets[n].board.width() / 2))
+                    .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
+                    .fill("red")
+                    .render();
 
-        widgets[n].board = app.board(cache, model)
-            // cache context says sharing of data/behavior via cache is limited to widget
-                .cache('widget' + n)
-            // model scope says mutable data may be shared across widgets
-            // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                .model('myCooperationScope')
-            //settings
-                .elem($(app.getElementById(widgets[n].board_id)))
-                .top(100)
-            // we may pass a self-executing closure instead of a simple function reference
-            // sp that we may close on inner-scope in the returned function
-                .left((function(m) { return function() {
-
-                    if (m == 0) return 100;
-                    return widgets[m-1].board.left() + widgets[m-1].board.width() + 20
-                }})(n))
-                .width(500)
-                .height(500)
-                .fill((function(m) { return function () {
-                    switch (m) {
-                        case 0:
-                            return "#F1D848";
-                        case 1:
-                            return "#FCACD1"
-                        case 2:
-                            return "#77CDF2"
-                    }
-                }})(n))
-            // save component to cache, using "cache context/component name" (i.e. widget_1/board) as path
-                .provide('board')
-                .onClick((function(m) { return function () {
-                    if (!widgets[m].ball1.animating()) {
-                        widgets[m].ball1.animate()
-                        if (m &gt;= 1) widgets[m].ball2.animate()
-                        if (m &gt;= 2) widgets[m].ball3.animate()
-                    } else {
-                        // widgets[n].ball1.kick()
-                    }
-                }})(n))
-                .render();
-
-        widgets[n].ball1 = app.ball(cache, model)
-            // cache context says sharing of data/behavior via cache is limited to widget
-                .cache('widget' + n)
-            // model scope says mutable data may be shared across widgets
-            // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                .model('myCooperationScope')
-            // Feature: consume a dependency (previously cached component) from the contextual component cache
-            // (accessed as cache context/component name) into a specific method
-            // Feature: due to 1:1 mapping limit, there is no hard wiring of the dependency's reference
-            // inside the method (attachment is to the data/behavior not the resource name)
-            // While a given resource, e.g. board, may be consumed by many methods in a given component or
-            // across components, each method may consume only one resource.
-                .consume([{name: 'board', into: 'animate'}])
-            // settings
-                .elem(app.getElementById(widgets[n].ball1_id))
-                .radius(10)
-                .dx(2)
-                .dy(4)
-                .speed(1.5)
-            //
-            // Feature: we may pass a reference to a value-producing closure (a function that
-            // returns a function that, when executed during the reading of the property, returns
-            // a value) as an argument to the property instead of the self-executing closure
-            // used in this example. That way the inner function will generate the value dynamically
-            // every time the property is read, resulting in a dynamic property. To do that here,
-            // you may return a closure from the self-executing closure (double closure?)
-            //
-            // Feature: "this" in a returned functions reference defaults to the component instance
-            //
-                .x((function(m) { return function() {
-                    return widgets[m].board.left() + (widgets[m].board.width() / 2)
-                }})(n))
-                .y((function(m) { return function() {
-                    return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                }})(n))
-                .fill("red")
-                .render();
-
-        if (n &gt;= 1) {
-            widgets[n].ball2 = app.ball(cache, model)
-                // cache context says sharing of data/behavior via cache is limited to widget
-                    .cache('widget' + n)
-                // model scope says mutable data may be shared across widgets
-                // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                    .model('myCooperationScope')
-                // consume a dependency from cache into a specific method (1:1)
-                // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
-                    .consume([{name: 'board', into: 'animate'}])
-                // settings
+            if (n >= 1) {
+                    widgets[n].ball2 = app.ball(model)
+                    .scope('xyzCooperationScope')
+                    .link([{comp: widgets[n].board, into: 'animate'}])
+                    // settings
                     .elem(app.getElementById(widgets[n].ball2_id))
                     .radius(widgets[n].ball1.radius() * 2)
                     .dx(6)
                     .dy(12)
                     .speed(1.5)
-                    .x((function(m) { return function() {
-                        return widgets[m].board.left() + (widgets[m].board.width() / 3)
-                    }})(n))
-                    .y((function(m) { return function() {
-                        return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                    }})(n))
+                    .x(widgets[n].board.left() + (widgets[n].board.width() / 3))
+                    .y( widgets[n].board.top() + (widgets[n].board.height() / 2))
                     .fill("blue")
                     .render();
+            }
 
-        }
-
-        if (n &gt;= 2) {
-
-            widgets[n].ball3 = app.ball(cache, model)
-                // cache context says sharing of data/behavior via cache is limited to widget
-                    .cache('widget' + n)
-                // model scope says mutable data may be shared across widgets
-                // set this to ('scope' + n) to limit to widget if there is any chance of collision
-                    .model('myCooperationScope')
-                // consume a dependency from cache into a specific method (1:1)
-                // Feature: due to 1:1 mapping, there is no hard wiring of dependency reference inside the method
-                    .consume([{name: 'board', into: 'animate'}])
-                // settings
-                    .elem(app.getElementById(widgets[n].ball3_id))
-                    .radius(widgets[n].ball1.radius() * 2.5)
-                    .dx(8)
-                    .dy(14)
-                    .speed(1.5)
-                    .x((function(m) { return function() {
-                        return widgets[m].board.left() + (widgets[m].board.width() / 4.5)
-                    }})(n))
-                    .y((function(m) { return function() {
-                        return widgets[m].board.top() + (widgets[m].board.height() / 2)
-                    }})(n))
-                    .fill("green")
-                    .render()
-        }
+            if (n >= 2) {
+                    widgets[n].ball3 = app.ball(model)
+                    .scope('xyzCooperationScope')
+            .link([{comp: widgets[n].board, into: 'animate'}])
+        // settings
+            .elem(app.getElementById(widgets[n].ball3_id))
+            .radius(widgets[n].ball1.radius() * 2.5)
+            .dx(8)
+            .dy(14)
+            .speed(1.5)
+            .x(widgets[n].board.left() + (widgets[n].board.width() / 4.5))
+            .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
+            .fill("green")
+            .render()
+    }
     }
 
-} ())
+    } ())
 &lt;/script&gt;
 </pre>
 </html>

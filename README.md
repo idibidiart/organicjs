@@ -5,10 +5,9 @@ OrganicJS Code Sample
 
  OrganicJS is a micro-framework for reusable JS+HTML+SVG components
 
-        OrganicJS supports reusable JS+HTML+SVG components with chainable properties and public methods, dynamic
-        setters/getters,reusable widget markup with nestable HTML/SVG fragments and in-place fragment cloning and
-        rendering, and sharing of data/behavior among components in a virtual manner using contextual
-        component caching.
+         OrganicJS supports reusable JS+HTML+SVG components with chainable properties and public methods, dynamic
+         setters/getters,reusable widget markup with nestable HTML/SVG fragments and in-place fragment cloning and
+         rendering, and sharing of mutable data among components iin user-defined collaboration scopes.
 
 Example's Features: 
 
