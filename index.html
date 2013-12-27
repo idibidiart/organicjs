@@ -110,30 +110,30 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
         //see organic.js
         var     model = app.model()
             ,   widgets = []
-            ,   sliderWidgets = []
+            ,   sliderWidget = []
             ,   numWidgets = 3;
 
         // All widgets in this example are derived from the above-defined HTML/SVG fragments
         // We may iteratively create the required number of widget instances and configure their properties/methods
         for (var n = 0; n < numWidgets; n++) {
 
-            sliderWidgets[n] = {};
+            sliderWidget[n] = {};
 
             // clone slider widget in place
-            sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
+            sliderWidget[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
             // create a clone of slider _inside_ the cloned slider widget (in-place cloning)
-            sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
+            sliderWidget[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidget[n].sliderWidget_id)))
 
             // you may use the cloned slider with jQuery or any other library as you would normally, e.g.:
-            // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
-            // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
+            // $(app.getElementById(sliderWidget[n].slider_id))).attr("class", "xyz")
+            // $(app.getElementById(sliderWidget[n].slider_id))).css({display: "block", etc })
 
-            sliderWidgets[n].slider = app.slider(model)
+            sliderWidget[n].slider = app.slider(model)
                     // model scope says mutable data may be shared across widgets
                     .scope('xyzCooperationScope')
                     //settings
-                    .elem(app.getElementById(sliderWidgets[n].slider_id))
+                    .elem(app.getElementById(sliderWidget[n].slider_id))
                     .left(100)
                     .top(20)
                     .display("block")
@@ -337,30 +337,30 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
         //see organic.js
         var     model = app.model()
             ,   widgets = []
-            ,   sliderWidgets = []
+            ,   sliderWidget = []
             ,   numWidgets = 3;
 
         // All widgets in this example are derived from the above-defined HTML/SVG fragments
         // We may iteratively create the required number of widget instances and configure their properties/methods
         for (var n = 0; n < numWidgets; n++) {
 
-            sliderWidgets[n] = {};
+            sliderWidget[n] = {};
 
             // clone slider widget in place
-            sliderWidgets[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
+            sliderWidget[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
             // create a clone of slider _inside_ the cloned slider widget (in-place cloning)
-            sliderWidgets[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidgets[n].sliderWidget_id)))
+            sliderWidget[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidget[n].sliderWidget_id)))
 
             // you may use the cloned slider with jQuery or any other library as you would normally, e.g.:
-            // $(app.getElementById(sliderWidgets[n].slider_id))).attr("class", "xyz")
-            // $(app.getElementById(sliderWidgets[n].slider_id))).css({display: "block", etc })
+            // $(app.getElementById(sliderWidget[n].slider_id))).attr("class", "xyz")
+            // $(app.getElementById(sliderWidget[n].slider_id))).css({display: "block", etc })
 
-            sliderWidgets[n].slider = app.slider(model)
+            sliderWidget[n].slider = app.slider(model)
                     // model scope says mutable data may be shared across widgets
                     .scope('xyzCooperationScope')
                     //settings
-                    .elem(app.getElementById(sliderWidgets[n].slider_id))
+                    .elem(app.getElementById(sliderWidget[n].slider_id))
                     .left(100)
                     .top(20)
                     .display("block")
