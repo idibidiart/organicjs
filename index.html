@@ -50,8 +50,7 @@
 <div>
     <!-- HTML fragment -->
     <div frag="sliderWidget">
-        <!-- nested HTML fragment -->
-        <input type="range" frag="slider"/>
+        <input type="range" />
     </div>
 </div>
 
@@ -109,7 +108,7 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
 
         //see organic.js
         var     model = app.model()
-            ,   widgets = []
+            ,   widget = []
             ,   sliderWidget = []
             ,   numWidgets = 3;
 
@@ -122,9 +121,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // clone slider widget in place
             sliderWidget[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
-            // create a clone of slider _inside_ the cloned slider widget (in-place cloning)
-            sliderWidget[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidget[n].sliderWidget_id)))
-
             // you may use the cloned slider with jQuery or any other library as you would normally, e.g.:
             // $(app.getElementById(sliderWidget[n].slider_id))).attr("class", "xyz")
             // $(app.getElementById(sliderWidget[n].slider_id))).css({display: "block", etc })
@@ -133,7 +129,7 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                     // model scope says mutable data may be shared across widgets
                     .scope('xyzCooperationScope')
                     //settings
-                    .elem(app.getElementById(sliderWidget[n].slider_id))
+                    .elem($('input', app.getElementById(sliderWidget[n].sliderWidget_id)))
                     .left(100)
                     .top(20)
                     .display("block")
@@ -146,24 +142,24 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                         var that = this;
 
                         if (m == 0) {
-                            widgets[m].ball1
+                            widget[m].ball1
                                 .radius(function() {
                                     return +that.value + (that.value > 3 ? 0 : 3);
                                 })
                                 .render()
                         }
                         if (m == 1) {
-                            widgets[m].ball1
+                            widget[m].ball1
                                 .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
                                 .render()
-                            widgets[m].ball2
+                            widget[m].ball2
                                 .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
                                 .render()
                         }
                         if (m == 2) {
-                            widgets[m].ball1.speed(this.value / 8)
-                            widgets[m].ball2.speed(this.value / 13)
-                            widgets[m].ball3.speed(this.value / 21)
+                            widget[m].ball1.speed(this.value / 8)
+                            widget[m].ball2.speed(this.value / 13)
+                            widget[m].ball3.speed(this.value / 21)
                         }
                     }})(n))
                     .render();
@@ -171,35 +167,35 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
 
         for (var n = 0; n < numWidgets; n++) {
 
-            widgets[n] = {}
+            widget[n] = {}
 
             // clone widget in place
-            widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
+            widget[n].widget_id =  app.new($('[frag="demoWidget"]'))
 
             // create clone of board fragment _inside_ the cloned widget fragment
-            widgets[n].board_id = app.new($('[frag="board"]', app.getElementById(widgets[n].widget_id)))
+            widget[n].board_id = app.new($('[frag="board"]', app.getElementById(widget[n].widget_id)))
 
             // create clone of ball #1 _inside_ the cloned widget
-            widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            widget[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widget[n].widget_id)))
             // create clone of balls #2 & #3 _inside_ the cloned widget
-            if (n >= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
-            if (n >= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            if (n >= 1) widget[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widget[n].widget_id)))
+            if (n >= 2) widget[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widget[n].widget_id)))
             // you may use the cloned ball with jQuery or any other library as you would normally, e.g.:
-            // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
-            // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
+            // $(app.getElementById(widget[n].ball2_id))).attr("class", "xyz")
+            // $(app.getElementById(widget[n].ball3_id))).css({display: "block", etc })
 
-            widgets[n].board = app.board(model)
+            widget[n].board = app.board(model)
                     // model scope allows mutable data may be shared safely across widgets
                     .scope('xyzCooperationScope')
                     //settings
-                    .elem($(app.getElementById(widgets[n].board_id)))
+                    .elem($(app.getElementById(widget[n].board_id)))
                     .top(100)
                     .left((function(m) {
                             // we may return a function that evaluates the code below if we wish for .left() to be
                             // set dynamically every time we call .left()
                             // in that case, 'this' would be evaluated as the component instance
                             if (m == 0) return 100;
-                            return widgets[m-1].board.left() + widgets[m-1].board.width() + 20
+                            return widget[m-1].board.left() + widget[m-1].board.width() + 20
                     })(n))
                     .width(500)
                     .height(500)
@@ -214,58 +210,58 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                         }
                     }})(n))
                     .onClick((function(m) { return function () {
-                        if (!widgets[m].ball1.animating()) {
-                            widgets[m].ball1.animate()
-                            if (m >= 1) widgets[m].ball2.animate()
-                            if (m >= 2) widgets[m].ball3.animate()
+                        if (!widget[m].ball1.animating()) {
+                            widget[m].ball1.animate()
+                            if (m >= 1) widget[m].ball2.animate()
+                            if (m >= 2) widget[m].ball3.animate()
                         } else {
-                            // widgets[n].ball1.kick()
+                            // widget[n].ball1.kick()
                         }
                     }})(n))
                     .render();
 
-            widgets[n].ball1 = app.ball(model)
+            widget[n].ball1 = app.ball(model)
                     .scope('xyzCooperationScope')
-                    .link([{comp: widgets[n].board, into: 'animate'}])
+                    .link([{comp: widget[n].board, into: 'animate'}])
                     // settings
-                    .elem(app.getElementById(widgets[n].ball1_id))
+                    .elem(app.getElementById(widget[n].ball1_id))
                     .radius(10)
                     .dx(2)
                     .dy(4)
                     .speed(1.5)
-                    .x(widgets[n].board.left() + (widgets[n].board.width() / 2))
-                    .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
+                    .x(widget[n].board.left() + (widget[n].board.width() / 2))
+                    .y(widget[n].board.top() + (widget[n].board.height() / 2))
                     .fill("red")
                     .render();
 
             if (n >= 1) {
-                    widgets[n].ball2 = app.ball(model)
+                    widget[n].ball2 = app.ball(model)
                     .scope('xyzCooperationScope')
-                    .link([{comp: widgets[n].board, into: 'animate'}])
+                    .link([{comp: widget[n].board, into: 'animate'}])
                     // settings
-                    .elem(app.getElementById(widgets[n].ball2_id))
-                    .radius(widgets[n].ball1.radius() * 2)
+                    .elem(app.getElementById(widget[n].ball2_id))
+                    .radius(widget[n].ball1.radius() * 2)
                     .dx(6)
                     .dy(12)
                     .speed(1.5)
-                    .x(widgets[n].board.left() + (widgets[n].board.width() / 3))
-                    .y( widgets[n].board.top() + (widgets[n].board.height() / 2))
+                    .x(widget[n].board.left() + (widget[n].board.width() / 3))
+                    .y( widget[n].board.top() + (widget[n].board.height() / 2))
                     .fill("blue")
                     .render();
             }
 
             if (n >= 2) {
-                    widgets[n].ball3 = app.ball(model)
+                    widget[n].ball3 = app.ball(model)
                     .scope('xyzCooperationScope')
-            .link([{comp: widgets[n].board, into: 'animate'}])
+            .link([{comp: widget[n].board, into: 'animate'}])
         // settings
-            .elem(app.getElementById(widgets[n].ball3_id))
-            .radius(widgets[n].ball1.radius() * 2.5)
+            .elem(app.getElementById(widget[n].ball3_id))
+            .radius(widget[n].ball1.radius() * 2.5)
             .dx(8)
             .dy(14)
             .speed(1.5)
-            .x(widgets[n].board.left() + (widgets[n].board.width() / 4.5))
-            .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
+            .x(widget[n].board.left() + (widget[n].board.width() / 4.5))
+            .y(widget[n].board.top() + (widget[n].board.height() / 2))
             .fill("green")
             .render()
     }
@@ -284,8 +280,7 @@ Below is the code for creating this app (the components themselves are defined i
 &lt;div&gt;
     &lt;!-- HTML fragment --&gt;
     &lt;div frag="sliderWidget"&gt;
-        &lt;!-- nested HTML fragment --&gt;
-        &lt;input type="range" frag="slider"/&gt;
+        &lt;input type="range" /&gt;
     &lt;/div&gt;
 &lt;/div&gt;
 
@@ -324,7 +319,7 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
 
 &lt;script&gt;
 
-    // Notes
+// Notes
     //
     // The in-line script shows how to build the app from components using the widget's markup
     // and how to access each component's public properties and methods
@@ -336,7 +331,7 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
 
         //see organic.js
         var     model = app.model()
-            ,   widgets = []
+            ,   widget = []
             ,   sliderWidget = []
             ,   numWidgets = 3;
 
@@ -349,9 +344,6 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // clone slider widget in place
             sliderWidget[n].sliderWidget_id = app.new($('[frag="sliderWidget"]'))
 
-            // create a clone of slider _inside_ the cloned slider widget (in-place cloning)
-            sliderWidget[n].slider_id = app.new($('[frag="slider"]', app.getElementById(sliderWidget[n].sliderWidget_id)))
-
             // you may use the cloned slider with jQuery or any other library as you would normally, e.g.:
             // $(app.getElementById(sliderWidget[n].slider_id))).attr("class", "xyz")
             // $(app.getElementById(sliderWidget[n].slider_id))).css({display: "block", etc })
@@ -360,7 +352,7 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                     // model scope says mutable data may be shared across widgets
                     .scope('xyzCooperationScope')
                     //settings
-                    .elem(app.getElementById(sliderWidget[n].slider_id))
+                    .elem($('input', app.getElementById(sliderWidget[n].sliderWidget_id)))
                     .left(100)
                     .top(20)
                     .display("block")
@@ -373,24 +365,24 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                         var that = this;
 
                         if (m == 0) {
-                            widgets[m].ball1
+                            widget[m].ball1
                                 .radius(function() {
                                     return +that.value + (that.value > 3 ? 0 : 3);
                                 })
                                 .render()
                         }
                         if (m == 1) {
-                            widgets[m].ball1
+                            widget[m].ball1
                                 .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
                                 .render()
-                            widgets[m].ball2
+                            widget[m].ball2
                                 .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
                                 .render()
                         }
                         if (m == 2) {
-                            widgets[m].ball1.speed(this.value / 8)
-                            widgets[m].ball2.speed(this.value / 13)
-                            widgets[m].ball3.speed(this.value / 21)
+                            widget[m].ball1.speed(this.value / 8)
+                            widget[m].ball2.speed(this.value / 13)
+                            widget[m].ball3.speed(this.value / 21)
                         }
                     }})(n))
                     .render();
@@ -398,35 +390,35 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
 
         for (var n = 0; n < numWidgets; n++) {
 
-            widgets[n] = {}
+            widget[n] = {}
 
             // clone widget in place
-            widgets[n].widget_id =  app.new($('[frag="demoWidget"]'))
+            widget[n].widget_id =  app.new($('[frag="demoWidget"]'))
 
             // create clone of board fragment _inside_ the cloned widget fragment
-            widgets[n].board_id = app.new($('[frag="board"]', app.getElementById(widgets[n].widget_id)))
+            widget[n].board_id = app.new($('[frag="board"]', app.getElementById(widget[n].widget_id)))
 
             // create clone of ball #1 _inside_ the cloned widget
-            widgets[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            widget[n].ball1_id = app.new($('[frag="ball"]', app.getElementById(widget[n].widget_id)))
             // create clone of balls #2 & #3 _inside_ the cloned widget
-            if (n >= 1) widgets[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
-            if (n >= 2) widgets[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widgets[n].widget_id)))
+            if (n >= 1) widget[n].ball2_id = app.new($('[frag="ball"]', app.getElementById(widget[n].widget_id)))
+            if (n >= 2) widget[n].ball3_id = app.new($('[frag="ball"]', app.getElementById(widget[n].widget_id)))
             // you may use the cloned ball with jQuery or any other library as you would normally, e.g.:
-            // $(app.getElementById(widgets[n].ball2_id))).attr("class", "xyz")
-            // $(app.getElementById(widgets[n].ball3_id))).css({display: "block", etc })
+            // $(app.getElementById(widget[n].ball2_id))).attr("class", "xyz")
+            // $(app.getElementById(widget[n].ball3_id))).css({display: "block", etc })
 
-            widgets[n].board = app.board(model)
+            widget[n].board = app.board(model)
                     // model scope allows mutable data may be shared safely across widgets
                     .scope('xyzCooperationScope')
                     //settings
-                    .elem($(app.getElementById(widgets[n].board_id)))
+                    .elem($(app.getElementById(widget[n].board_id)))
                     .top(100)
                     .left((function(m) {
                             // we may return a function that evaluates the code below if we wish for .left() to be
                             // set dynamically every time we call .left()
                             // in that case, 'this' would be evaluated as the component instance
                             if (m == 0) return 100;
-                            return widgets[m-1].board.left() + widgets[m-1].board.width() + 20
+                            return widget[m-1].board.left() + widget[m-1].board.width() + 20
                     })(n))
                     .width(500)
                     .height(500)
@@ -441,58 +433,58 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                         }
                     }})(n))
                     .onClick((function(m) { return function () {
-                        if (!widgets[m].ball1.animating()) {
-                            widgets[m].ball1.animate()
-                            if (m >= 1) widgets[m].ball2.animate()
-                            if (m >= 2) widgets[m].ball3.animate()
+                        if (!widget[m].ball1.animating()) {
+                            widget[m].ball1.animate()
+                            if (m >= 1) widget[m].ball2.animate()
+                            if (m >= 2) widget[m].ball3.animate()
                         } else {
-                            // widgets[n].ball1.kick()
+                            // widget[n].ball1.kick()
                         }
                     }})(n))
                     .render();
 
-            widgets[n].ball1 = app.ball(model)
+            widget[n].ball1 = app.ball(model)
                     .scope('xyzCooperationScope')
-                    .link([{comp: widgets[n].board, into: 'animate'}])
+                    .link([{comp: widget[n].board, into: 'animate'}])
                     // settings
-                    .elem(app.getElementById(widgets[n].ball1_id))
+                    .elem(app.getElementById(widget[n].ball1_id))
                     .radius(10)
                     .dx(2)
                     .dy(4)
                     .speed(1.5)
-                    .x(widgets[n].board.left() + (widgets[n].board.width() / 2))
-                    .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
+                    .x(widget[n].board.left() + (widget[n].board.width() / 2))
+                    .y(widget[n].board.top() + (widget[n].board.height() / 2))
                     .fill("red")
                     .render();
 
             if (n >= 1) {
-                    widgets[n].ball2 = app.ball(model)
+                    widget[n].ball2 = app.ball(model)
                     .scope('xyzCooperationScope')
-                    .link([{comp: widgets[n].board, into: 'animate'}])
+                    .link([{comp: widget[n].board, into: 'animate'}])
                     // settings
-                    .elem(app.getElementById(widgets[n].ball2_id))
-                    .radius(widgets[n].ball1.radius() * 2)
+                    .elem(app.getElementById(widget[n].ball2_id))
+                    .radius(widget[n].ball1.radius() * 2)
                     .dx(6)
                     .dy(12)
                     .speed(1.5)
-                    .x(widgets[n].board.left() + (widgets[n].board.width() / 3))
-                    .y( widgets[n].board.top() + (widgets[n].board.height() / 2))
+                    .x(widget[n].board.left() + (widget[n].board.width() / 3))
+                    .y( widget[n].board.top() + (widget[n].board.height() / 2))
                     .fill("blue")
                     .render();
             }
 
             if (n >= 2) {
-                    widgets[n].ball3 = app.ball(model)
+                    widget[n].ball3 = app.ball(model)
                     .scope('xyzCooperationScope')
-            .link([{comp: widgets[n].board, into: 'animate'}])
+            .link([{comp: widget[n].board, into: 'animate'}])
         // settings
-            .elem(app.getElementById(widgets[n].ball3_id))
-            .radius(widgets[n].ball1.radius() * 2.5)
+            .elem(app.getElementById(widget[n].ball3_id))
+            .radius(widget[n].ball1.radius() * 2.5)
             .dx(8)
             .dy(14)
             .speed(1.5)
-            .x(widgets[n].board.left() + (widgets[n].board.width() / 4.5))
-            .y(widgets[n].board.top() + (widgets[n].board.height() / 2))
+            .x(widget[n].board.left() + (widget[n].board.width() / 4.5))
+            .y(widget[n].board.top() + (widget[n].board.height() / 2))
             .fill("green")
             .render()
     }
