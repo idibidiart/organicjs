@@ -25,7 +25,7 @@
             throw new Error("no public properties defined").stack;
         //explicitly set to undefined so it can be found in props
         obj.props.scope = undefined;
-        obj.props.link = undefined;
+        obj.props.import = undefined;
 
         for (var o in obj.props) {
             obj[o] =  new Function("value", "if (!arguments.length) return typeof this.props['" + o +
