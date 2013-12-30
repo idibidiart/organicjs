@@ -139,10 +139,10 @@
            var consumed = null;
 
            // find out what name was imported ('animate' being this method's name)
-           for (var n = 0; n < obj.link().length; n++) {
+           for (var n = 0; n < obj.import().length; n++) {
 
-               if (obj.link()[n].into == "animate") {
-                   consumed = obj.link()[n].comp;
+               if (obj.import()[n].into == "animate") {
+                   consumed = obj.import()[n].comp;
                    break;
                }
            }

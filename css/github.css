@@ -6,7 +6,7 @@ body{
     font-family: Helvetica, Arial, FreeSans, san-serif;
 }
 
-#banner{
+.banner{
     position: relative;
 
     height: 149px;
@@ -72,7 +72,7 @@ body{
 
 }
 
-#container {
+.container {
     margin: 0 auto;
     width: 700px;
 }
