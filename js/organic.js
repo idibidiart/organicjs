@@ -5,17 +5,10 @@
  properties and methods, dynamic setters/getters, reusable HTML/SVG markup and safe sharing of
  mutable state among components.
 
- @MarcFawzi
-
- Last modified: Dec 27th, 2013
-
- v0.4
+ @MarcFawzi Last modified: Dec 27th, 2013 v0.4
  */
-
 (function(){
-
     var app = app || {};
-
     // Getters/Setters
     // this creates getter/setter on the object for each of its public properties
     // so that public properties may be accessed as componentInstance.property(value) (when setting)
@@ -47,11 +40,9 @@
     // setters are chain-able
     //
     // the scope specified and returned by the component's .model()
-
     app.model = app.model || function Model(scope) {
         var obj = {}
         obj.scopes = function() { return obj}
-
         obj.create = function(json) {
             if (typeof obj[scope] == 'undefined')
                 throw new Error("no scope defined").stack
@@ -106,7 +97,6 @@
     }
 
     app.uuid = app.uuid ||
-
         (typeof(window.crypto) != 'undefined' &&
             typeof(window.crypto.getRandomValues) != 'undefined')
 
@@ -142,5 +132,4 @@
             };
 
     window.app = app;
-
 } ())
