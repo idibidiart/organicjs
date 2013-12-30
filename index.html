@@ -13,7 +13,7 @@
 
         This app uses "OrganicJS" ...
 
-        OrganicJS is super light framework for reusable JS+HTML+SVG components
+        OrganicJS is super light framework for reusable JS+HTML+SVG components (135 lines of code including comments)
 
         OrganicJS supports reusable JS+HTML+SVG componentsJS+HTML+SVG components with chainable
         properties and methods, dynamic setters/getters, reusable HTML/SVG markup and safe sharing of
@@ -40,7 +40,7 @@
         <span class="small">by <a href="https://github.com/idibidiart">idibidiart</a></span></h1>
 
     <div class="description">
-        Super Light Framework for Reusable JS+HTML+SVG Components
+        Super Light Framework for Reusable JS+HTML+SVG Components (135 lines of code including comments)
     </div>
 </div>
 <!-- Define widgets with nestable, reusable HTML5/SVG fragments for in-place cloning and rendering -->
@@ -96,18 +96,16 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
     // Notes
     //
     // The in-line script shows how to build the app from components using predefined HTML/SVG markup
-    // and how to access each component's public properties and methods
-    //
-    // Hooking up application level unit tests would make a nice extension
-    // to this example
+    // and how to access each component's public properties and methods. Hooking up application level unit
+    // tests would make a nice extension to this example
 
     (function() {
 
         //see organic.js
         var     model = app.model()
-            ,   mainWidget = []
-            ,   sliderWidget = []
-            ,   numWidgets = 3;
+                ,   mainWidget = []
+                ,   sliderWidget = []
+                ,   numWidgets = 3;
 
         // All widgets in this example are derived from the above-defined HTML/SVG fragments
         // We may iteratively create the required number of widget instances and configure their properties/methods
@@ -123,9 +121,9 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // $(app.getElementById(sliderWidget[n].slider_id))).css({display: "block", etc })
 
             sliderWidget[n].slider = app.slider(model)
-                    // model scope allows mutable data/state to be shared safely across components
+                // model scope allows mutable data/state to be shared safely across components
                     .scope('xyzCooperationScope')
-                    //settings
+                //settings
                     .elem($('input', app.getElementById(sliderWidget[n].sliderWidget_id)))
                     .left(100)
                     .top(20)
@@ -133,25 +131,25 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                     .min("10")
                     .max("50")
                     .value("10")
-                    // method that takes a function and $.binds it to the element's change event
+                // method that takes a function and $.binds it to the element's change event
                     .onChange((function(m) { return function() {
 
                         var that = this;
 
                         if (m == 0) {
                             mainWidget[m].ball1
-                                .radius(function() {
-                                    return +that.value + (that.value > 3 ? 0 : 3);
-                                })
-                                .render()
+                                    .radius(function() {
+                                        return +that.value + (that.value > 3 ? 0 : 3);
+                                    })
+                                    .render()
                         }
                         if (m == 1) {
                             mainWidget[m].ball1
-                                .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
-                                .render()
+                                    .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
+                                    .render()
                             mainWidget[m].ball2
-                                .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
-                                .render()
+                                    .fill(function () {return '#'+Math.ceil((Math.random())*16777215).toString(16)})
+                                    .render()
                         }
                         if (m == 2) {
                             mainWidget[m].ball1.speed(this.value / 8)
@@ -182,17 +180,17 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
             // $(app.getElementById(mainWidget[n].ball3_id))).css({display: "block", etc })
 
             mainWidget[n].board = app.board(model)
-                    // model scope allows mutable data/state to be shared safely across components
+                // model scope allows mutable data/state to be shared safely across components
                     .scope('xyzCooperationScope')
-                    //settings
+                //settings
                     .elem($(app.getElementById(mainWidget[n].board_id)))
                     .top(100)
                     .left((function(m) {
-                            // we may return a function that evaluates the code below if we wish for .left() to be
-                            // set dynamically every time we call .left()
-                            // in that case, 'this' would be evaluated as the component instance
-                            if (m == 0) return 100;
-                            return mainWidget[m-1].board.left() + mainWidget[m-1].board.width() + 20
+                        // we may return a function that evaluates the code below if we wish for .left() to be
+                        // set dynamically every time we call .left()
+                        // in that case, 'this' would be evaluated as the component instance
+                        if (m == 0) return 100;
+                        return mainWidget[m-1].board.left() + mainWidget[m-1].board.width() + 20
                     })(n))
                     .width(500)
                     .height(500)
@@ -219,9 +217,9 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
 
             mainWidget[n].ball1 = app.ball(model)
                     .scope('xyzCooperationScope')
-                    // function-scoped import
+                // function-scoped import
                     .import([{comp: mainWidget[n].board, into: 'animate'}])
-                    // settings
+                // settings
                     .elem(app.getElementById(mainWidget[n].ball1_id))
                     .radius(10)
                     .dx(2)
@@ -233,42 +231,42 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
                     .render();
 
             if (n >= 1) {
-                    mainWidget[n].ball2 = app.ball(model)
-                    .scope('xyzCooperationScope')
-                    .import([{comp: mainWidget[n].board, into: 'animate'}])
+                mainWidget[n].ball2 = app.ball(model)
+                        .scope('xyzCooperationScope')
+                        .import([{comp: mainWidget[n].board, into: 'animate'}])
                     // settings
-                    .elem(app.getElementById(mainWidget[n].ball2_id))
-                    .radius(mainWidget[n].ball1.radius() * 2)
-                    .dx(6)
-                    .dy(12)
-                    .speed(1.5)
-                    .x(mainWidget[n].board.left() + (mainWidget[n].board.width() / 3))
-                    .y( mainWidget[n].board.top() + (mainWidget[n].board.height() / 2))
-                    .fill("blue")
-                    .render();
+                        .elem(app.getElementById(mainWidget[n].ball2_id))
+                        .radius(mainWidget[n].ball1.radius() * 2)
+                        .dx(6)
+                        .dy(12)
+                        .speed(1.5)
+                        .x(mainWidget[n].board.left() + (mainWidget[n].board.width() / 3))
+                        .y( mainWidget[n].board.top() + (mainWidget[n].board.height() / 2))
+                        .fill("blue")
+                        .render();
             }
 
             if (n >= 2) {
-                    mainWidget[n].ball3 = app.ball(model)
-                    .scope('xyzCooperationScope')
-                    .import([{comp: mainWidget[n].board, into: 'animate'}])
+                mainWidget[n].ball3 = app.ball(model)
+                        .scope('xyzCooperationScope')
+                        .import([{comp: mainWidget[n].board, into: 'animate'}])
                     // settings
-                    .elem(app.getElementById(mainWidget[n].ball3_id))
-                    .radius(mainWidget[n].ball1.radius() * 2.5)
-                    .dx(8)
-                    .dy(14)
-                    .speed(1.5)
-                    .x(mainWidget[n].board.left() + (mainWidget[n].board.width() / 4.5))
-                    .y(mainWidget[n].board.top() + (mainWidget[n].board.height() / 2))
-                    .fill("green")
-                    .render()
+                        .elem(app.getElementById(mainWidget[n].ball3_id))
+                        .radius(mainWidget[n].ball1.radius() * 2.5)
+                        .dx(8)
+                        .dy(14)
+                        .speed(1.5)
+                        .x(mainWidget[n].board.left() + (mainWidget[n].board.width() / 4.5))
+                        .y(mainWidget[n].board.top() + (mainWidget[n].board.height() / 2))
+                        .fill("green")
+                        .render()
             }
         }
 
     } ())
 </script>
 <p>
-Below is the code for creating this app (the components themselves are defined in bouncy.js)
+    Below is the code for creating this app (the components themselves are defined in bouncy.js)
 </p>
 <pre class="prettyprint">
 
@@ -320,10 +318,8 @@ created from a fragment (via app.new()) and a corresponding app.getElementById()
     // Notes
     //
     // The in-line script shows how to build the app from components using predefined HTML/SVG markup
-    // and how to access each component's public properties and methods
-    //
-    // Hooking up application level unit tests would make a nice extension
-    // to this example
+    // and how to access each component's public properties and methods. Hooking up application level unit
+    // tests would make a nice extension to this example
 
     (function() {
 
