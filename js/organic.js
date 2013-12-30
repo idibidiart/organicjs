@@ -1,15 +1,15 @@
 /*
  OrganicJS is a super light framework for reusable JS+HTML+SVG components
 
- OrganicJS supports reusable JS+HTML+SVG components with chainable properties and methods, dynamic
- setters/getters, reusable HTML/SVG markup and safe sharing of mutable data among components
- in user-defined scopes.
+ OrganicJS supports reusable JS+HTML+SVG componentsJS+HTML+SVG components with chainable
+ properties and methods, dynamic setters/getters, reusable HTML/SVG markup and safe sharing of
+ mutable state among components.
 
  @MarcFawzi
 
  Last modified: Dec 27th, 2013
 
- v0.3
+ v0.4
  */
 
 (function(){
