@@ -3,7 +3,7 @@ organicjs
 
 OrganicJS Code Sample
 
- OrganicJS is a super light framework for reusable JS+HTML+SVG components
+ OrganicJS is a super light framework for reusable JS+HTML+SVG components (135 lines of code including comments)
 
     OrganicJS supports reusable JS+HTML+SVG componentsJS+HTML+SVG components with chainable
     properties and methods, dynamic setters/getters, reusable HTML/SVG markup and safe sharing of
