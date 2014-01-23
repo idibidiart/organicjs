@@ -24,7 +24,6 @@
         if (obj.props === undefined)
             throw new Error("no public properties defined").stack;
         //explicitly set to undefined so it can be found in props
-        obj.props.scope = undefined;
         obj.props.import = undefined;
 
         for (var o in obj.props) {
@@ -35,43 +34,49 @@
 
     }
 
-    // Scoped Data Model
+    // Model Object
     //
-    // For storing global data structures in user-defined scope
+    // For storing and safely accessing data in named models
     //
-    // use model("scope").create({key1: value, key2: value, etc}) to create new properties
-    // use model("scope").keyName() to get the value for a key in the given scope
-    // use model("scope").keyName(value) to set the value for a key in the given scope
-    // use console.log(model.scopes()) to view all scopes and keys within them
+    // use model("name").set({key1: value, key2: value, etc}) to create/update a given model
+    // use model("name").get() to get a cloned copy of a given model
+    // use model("name").key() to get a cloned copy of the value of some "key" in a given model
+    // use model("name").key(value) to set the value of some "key" in the given model
+    // use console.log(model.root()) to view all the models
     //
-    // setters are chain-able
-    //
-    // the scope specified and returned by the component's .model()
+    // Model Object setters are chain-able
 
-    app.model = app.model || function Model(scope) {
+    app.model = app.model || function Model(name) {
         var obj = {}
-        obj.scopes = function() { return obj}
+        obj.root = function() { return obj}
 
-        obj.create = function(json) {
-            if (typeof obj[scope] == 'undefined')
-                throw new Error("no scope defined").stack
-            obj[scope] = obj[scope] || {}
-            obj[scope].props = obj[scope].props || {}
+        obj.set = function(json) {
+            if (typeof name == 'undefined')
+                throw new Error("no name defined").stack
+            // create or update
+            obj[name] = obj[name] || {}
+            obj[name].props = obj[name].props || {}
 
             for (var key in json) {
-                if (json.hasOwnProperty(key)) obj[scope].props[key] = json[key]
+                if (json.hasOwnProperty(key)) obj[name].props[key] = json[key]
             }
 
-            for (var o in obj[scope].props) {
-                if (obj[scope].props.hasOwnProperty(o)) {
-                    obj[o] =  new Function("scope, value", "if (!scope) return; if (!value) " +
-                        "return this[scope].props['" + o + "'];" +
-                        "this[scope].props['" + o +
+            for (var o in obj[name].props) {
+                if (obj[name].props.hasOwnProperty(o)) {
+                    obj[o] =  new Function("name, value", "if (!name) return; if (!value) " +
+                        "return JSON.parse(JSON.stringify(this[name].props['" + o + "']));" +
+                        "this[name].props['" + o +
                         "'] = value; return this")
                 }
             }
             return obj;
         }
+
+        obj.get = function() {
+            var model = obj[name] || {}
+            return JSON.parse(JSON.stringify(model))
+        }
+
         return obj;
     }
 

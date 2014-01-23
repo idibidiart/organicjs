@@ -169,9 +169,7 @@
            if (obj.y() + obj.dy() < obj.radius() + rChange + dependencyObject.top() ||
 
                obj.y() + obj.dy() > dependencyObject.height() - obj.radius() - rChange + dependencyObject.top())
-
            {
-
                obj.dy(-obj.dy());
            }
 
